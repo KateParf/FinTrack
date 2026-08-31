@@ -3,6 +3,7 @@ import { updateTransaction } from "../../api/transactionsApi";
 import { CategoryWithDepth } from "../../utils/flattenCategories";
 import { Transaction, TransactionType } from "../../types/transaction";
 import { CategoryType } from "../../types/category";
+import { toDateTimeLocal } from "../../utils/formatDateTime";
 
 interface UpdateTransactionFormProps {
     transaction: Transaction;
@@ -11,18 +12,7 @@ interface UpdateTransactionFormProps {
     onCancel: () => void;
 }
 
-function toDateTimeLocal(value: string): string {
-    const date = new Date(value);
-    const timezoneOffset = date.getTimezoneOffset() * 60_000;
-    return new Date(date.getTime() - timezoneOffset).toISOString().slice(0, 16);
-}
-
-export function UpdateTransactionForm({
-    transaction,
-    categories,
-    onUpdate,
-    onCancel
-}: UpdateTransactionFormProps) {
+export function UpdateTransactionForm({ transaction, categories, onUpdate, onCancel }: UpdateTransactionFormProps) {
     const [type, setType] = useState<TransactionType>(transaction.type);
     const [categoryId, setCategoryId] = useState(transaction.categoryId ?? "");
     const [amount, setAmount] = useState(transaction.amount.toString());

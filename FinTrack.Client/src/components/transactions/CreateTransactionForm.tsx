@@ -3,14 +3,15 @@ import { createTransaction } from "../../api/transactionsApi";
 import { CategoryWithDepth } from "../../utils/flattenCategories";
 import { TransactionType } from "../../types/transaction";
 import { CategoryType } from "../../types/category";
+import { Account } from "../../types/account";
 
 interface CreateTransactionFormProps {
-    accountId: string;
+    account: Account;
     categories: CategoryWithDepth[];
     onCreate: () => Promise<void>;
 }
 
-export function CreateTransactionForm({ accountId, categories, onCreate }: CreateTransactionFormProps) {
+export function CreateTransactionForm({ account, categories, onCreate }: CreateTransactionFormProps) {
     const [type, setType] = useState<TransactionType>(TransactionType.Expense);
     const [categoryId, setCategoryId] = useState("");
     const [amount, setAmount] = useState("");
@@ -41,7 +42,7 @@ export function CreateTransactionForm({ accountId, categories, onCreate }: Creat
         setIsSubmitting(true);
         try {
             await createTransaction({
-                accountId,
+                accountId: account.id,
                 type,
                 categoryId: categoryId || null,
                 amount: parsedAmount,
@@ -92,7 +93,7 @@ export function CreateTransactionForm({ accountId, categories, onCreate }: Creat
                     <label htmlFor="transaction-amount">Сумма </label>
                     <input id="transaction-amount" type="number" min="0.01" step="0.01"
                         value={amount} onChange={event => setAmount(event.target.value)}
-                        required />
+                        required /> {account.currencyCode}
                 </div>
 
                 <div className="card-text">
@@ -104,9 +105,7 @@ export function CreateTransactionForm({ accountId, categories, onCreate }: Creat
 
                 <div className="card-text">
                     <label htmlFor="transaction-note">Комментарий </label>
-                    <input id="transaction-note" value={note}
-                        onChange={event => setNote(event.target.value)}
-                    />
+                    <input id="transaction-note" value={note} onChange={event => setNote(event.target.value)}/>
                 </div>
 
                 {error && <p>{error}</p>}

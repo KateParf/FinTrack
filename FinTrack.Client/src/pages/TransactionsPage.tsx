@@ -1,8 +1,8 @@
 import { FormEvent, useEffect, useState } from "react";
 import { Transaction, TransactionType, transactionTypeLabels } from "../types/transaction";
 import { Account } from "../types/account";
-import { getTransactions } from "../api/transactionsApi";
-import { getAccountById } from "../api/accountsApi";
+import { deleteTransaction, getTransactions } from "../api/transactionsApi";
+import { getAccountById, getAccounts } from "../api/accountsApi";
 import { Link, useParams } from "react-router-dom";
 import { TransactionCard } from "../components/transactions/TransactionCard";
 import { getCategories } from "../api/categoriesApi";
@@ -11,12 +11,15 @@ import { toEndOfDayUtc, toStartOfDayUtc } from "../utils/formatDateTime";
 import { formatCurrency } from "../utils/formatMoney";
 import { CategoryType } from "../types/category";
 import { CreateTransactionForm } from "../components/transactions/CreateTransactionForm";
+import { CreateTransferForm } from "../components/transfers/CreateTransferForm";
+import { deleteTransfer } from "../api/transfersApi";
 
 export function TransactionsPage() {
     const { accountId } = useParams<{ accountId: string }>();
 
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [account, setAccount] = useState<Account | null>(null);
+    const [accounts, setAccounts] = useState<Account[]>([]);
     const [categories, setCategories] = useState<CategoryWithDepth[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -42,12 +45,14 @@ export function TransactionsPage() {
         setIsLoading(true);
         setError(null);
         try {
-            const [accountResponse, transactionsResponse, categoriesResponse] = await Promise.all([
+            const [accountResponse, accountsResponse, transactionsResponse, categoriesResponse] = await Promise.all([
                 getAccountById(accountId),
+                getAccounts(null, false),
                 getTransactions(accountId),
                 getCategories(null, true)
             ]);
             setAccount(accountResponse);
+            setAccounts(accountsResponse);
             setTransactions(transactionsResponse);
             setCategories(flattenCategoriesWithDepth(categoriesResponse));
         } catch (error) {
@@ -58,7 +63,8 @@ export function TransactionsPage() {
     }
     useEffect(() => { void loadPageData(); }, [accountId]);
 
-    async function loadTransactions() {
+    async function loadTransactions(event: FormEvent<HTMLFormElement>) {
+        event.preventDefault();
         if (!accountId) return;
         setIsLoading(true);
         setError(null);
@@ -76,9 +82,28 @@ export function TransactionsPage() {
             setIsLoading(false);
         }
     }
-    async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-        event.preventDefault();
-        await loadTransactions();
+
+    async function handleDeleteTransaction(id: string) {
+        const confirmed = window.confirm("Удалить операцию?");
+        if (!confirmed) return;
+        try {
+            await deleteTransaction(id);
+            await loadPageData();
+        } catch (error) {
+            setError(error instanceof Error ? error.message : "Не удалось удалить операцию");
+        }
+    }
+
+    async function handleDeleteTransfer(transferGroupId: string) {
+        const confirmed = window.confirm("Удалить перевод?");
+        if (!confirmed) return;
+        try {
+            await deleteTransfer(transferGroupId);
+            await loadPageData();
+        } catch (error) {
+            setError(error instanceof Error ? error.message : "Не удалось удалить перевод");
+            throw error;
+        }
     }
 
     if (!accountId) { return <p>Не указан счёт</p>; }
@@ -87,7 +112,7 @@ export function TransactionsPage() {
             <h1>Операции на счёте {account?.name}</h1>
             {account && (<h2>Баланс: {formatCurrency(account.balance, account.currencyCode)}</h2>)}
 
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={loadTransactions}>
                 <div>
                     <label htmlFor="type">Тип </label>
                     <select id="type" value={type ?? ""}
@@ -137,7 +162,7 @@ export function TransactionsPage() {
                     />
                 </div>
 
-                <button type="submit" disabled={isLoading}>
+                <button className="card-btn" type="submit" disabled={isLoading}>
                     {isLoading ? "Загружаем..." : "Применить"}
                 </button>
             </form>
@@ -147,18 +172,27 @@ export function TransactionsPage() {
                 {!isLoading && error && (<p>{error}</p>)}
                 {!isLoading && !error && transactions.length === 0 && (<p>На этом счету пока нет операций</p>)}
 
-                {!isLoading && !error && account &&
+                {!isLoading && !error &&
                     transactions.map(transaction => (
-                        <TransactionCard key={transaction.id} transaction={transaction} currencyCode={account.currencyCode} categories={categories} onUpdate={loadTransactions}/>
+                        <TransactionCard key={transaction.id} 
+                        transaction={transaction} accounts = {accounts} currencyCode={account!.currencyCode} categories={categories} 
+                        onUpdate={loadPageData} onDeleteTransaction={handleDeleteTransaction} onDeleteTransfer={handleDeleteTransfer}/>
                     ))}
+
+                {!isLoading && !error && account &&
+                    (<div>
+                        <h2>Добавить новую операцию</h2>
+                        <CreateTransactionForm account={account} categories={categories} onCreate={loadPageData} />
+                    </div>)}
+                {!isLoading && !error && account &&
+                    (<div>
+                        <h2>Добавить новый перевод между счетами</h2>
+                        <CreateTransferForm account={account} accounts={accounts} onCreate={loadPageData} />
+                    </div>)
+                }
             </div>
 
-            <div>
-                <h2>Добавить новую операцию</h2>
-                <CreateTransactionForm accountId={accountId} categories={categories} onCreate={loadTransactions} />
-            </div>
-
-            <div><Link to="/accounts"> ← К счетам </Link></div>
-        </div>
+            <div><Link className="card-btn" to="/accounts"> ← К счетам </Link></div>
+        </div >
     );
 }

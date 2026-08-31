@@ -5,11 +5,11 @@ export interface Transfer {
     fromAccountId: string;
     fromAccountName: string;
     toAccountId: string;
-    toAccountNAme: string;
+    toAccountName: string;
     currencyCode: string;
     amount: number;
     occurredAtUtc: string;
-    note: string;
+    note: string | null;
     creationTimeAtUtc: string;
     updateTimeAtUtc: string;
 }
@@ -19,5 +19,5 @@ export interface TransferRequest {
     toAccountId: string;
     amount: number;
     occurredAtUtc: string;
-    note: string;
+    note: string | null;
 }
