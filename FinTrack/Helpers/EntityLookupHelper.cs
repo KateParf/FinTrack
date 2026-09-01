@@ -58,12 +58,4 @@ public static class EntityLookupHelper
         return goal;
     }
 
-    public static async Task ValidateLinkedTransactionAsync(this ApplicationContext context, Guid userId, Guid transactionId)
-    {
-        var exists = await context.Transactions
-            .AnyAsync(t => t.Id == transactionId && t.Account.UserId == userId);
-
-        if (!exists)
-            throw new InvalidOperationException("Linked transaction not found");
-    }
 }

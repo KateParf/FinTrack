@@ -6,6 +6,7 @@ import { ProtectedRoute } from "./auth/ProtectedRoute";
 import { AccountsPage } from "./pages/AccountsPage";
 import { CategoriesPage } from "./pages/CategoriesPage";
 import { TransactionsPage } from "./pages/TransactionsPage";
+import { SavingGoalsPage } from "./pages/SavingGoalsPage";
 
 export function App() {
     return (
@@ -14,6 +15,7 @@ export function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/accounts" element={<ProtectedRoute><AccountsPage /></ProtectedRoute>} />
+            <Route path="/saving-goals" element={<ProtectedRoute><SavingGoalsPage /></ProtectedRoute>} />
             <Route path="/categories" element={<ProtectedRoute><CategoriesPage /> </ProtectedRoute>} />
             <Route path="/accounts/:accountId/transactions" element={<ProtectedRoute><TransactionsPage /></ProtectedRoute>} />
             <Route path="*" element={<Navigate to="/" replace />} />

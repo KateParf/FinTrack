@@ -1,8 +1,11 @@
+import { Account } from "./account";
+
 export interface SavingGoalRequest {
     name: string;
     targetAmount: number;
     currencyCode: string;
-    targetDate: string; 
+    targetDate: string | null;
+    accountIds: string[];
 }
 
 export interface SavingGoal {
@@ -10,27 +13,13 @@ export interface SavingGoal {
     name: string;
     targetAmount: number;
     currentAmount: number;
+    remainingAmount: number;
+    progressPercent: number;
     currencyCode: string;
-    targetDate: string; 
+    targetDate: string | null; 
+    isCompleted: boolean;
     isArchived: boolean;
+    accounts: Account[];
     creationTimeAtUtc: string;
-}
-
-export interface GoalContributionRequest {
-    type: number;
-    amount: number;
-    occurredAtUtc: number;
-    note: string;
-    transactionId: string;
-}
-
-export interface GoalContribution {
-    id: string;
-    goalId: string;
-    type: number;
-    amount: number;
-    occurredAtUtc: number;
-    note: string;
-    transactionId: string;
-    creationTimeAtUtc: string;
+    updateTimeAtUtc: string;
 }

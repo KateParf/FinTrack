@@ -11,25 +11,6 @@ public class SavingsGoal
     public DateOnly? TargetDate { get; set; }
     public bool IsArchived { get; set; }
     public DateTime CreationTimeAtUtc { get; set; }
-    public ICollection<GoalContribution> Contributions { get; set; } = [];
-}
-
-public class GoalContribution
-{
-    public Guid Id { get; set; }
-    public Guid GoalId { get; set; }
-    public SavingsGoal Goal { get; set; } = null!;
-    public GoalContributionType Type { get; set; }
-    public decimal Amount { get; set; }
-    public DateTime OccurredAtUtc { get; set; }
-    public string? Note { get; set; }
-    public Guid? TransactionId { get; set; }
-    public Transaction? Transaction { get; set; }
-    public DateTime CreationTimeAtUtc { get; set; }
-}
-
-public enum GoalContributionType : short
-{
-    Deposit = 1,
-    Withdrawal = 2
+    public DateTime UpdateTimeAtUtc { get; set; }
+    public ICollection<Account> Accounts { get; set; } = [];
 }

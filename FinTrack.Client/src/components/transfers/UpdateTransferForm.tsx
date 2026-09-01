@@ -98,7 +98,7 @@ export function UpdateTransferForm({ transfer, accounts, onUpdate, onCancel }: U
                     <div className="card-text">
                         <label htmlFor="transfer-to-account">На счёт </label>
                         <select id="transfer-to-account" value={toAccountId}
-                            onChange={event => setToAccountId(event.target.value)} required>
+                            onChange={event => handleToAccountChange(event.target.value)} required>
                             {availableAccountsTo.map(acc => (
                                 <option key={acc.id} value={acc.id}>{acc.name}</option>
                             ))}

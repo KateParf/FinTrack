@@ -67,8 +67,10 @@ public class AccountsService
         if (existing == null)
             return null;
 
+        if (existing.SavingsGoalId.HasValue && request.Type is not AccountType.Savings and not AccountType.Deposit)
+            throw new InvalidOperationException("Account linked to a saving goal must be Savings or Deposit");
+
         existing.Name = InputNormalizer.NormalizeName(request.Name, "Account name");
-        existing.Type = request.Type;
         existing.UpdateTimeAtUtc = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
@@ -82,6 +84,9 @@ public class AccountsService
 
         if (account == null)
             return false;
+
+        if (account.SavingsGoalId.HasValue)
+            account.SavingsGoalId = null;
 
         account.IsArchived = true;
         account.UpdateTimeAtUtc = DateTime.UtcNow;
@@ -105,7 +110,7 @@ public class AccountsService
         return true;
     }
 
-    private static AccountResponse ToResponse(Account account)
+    public static AccountResponse ToResponse(Account account)
     {
         return new AccountResponse(
             account.Id,

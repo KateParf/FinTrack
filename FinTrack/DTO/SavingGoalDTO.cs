@@ -6,31 +6,20 @@ public record SavingGoalRequest(
     string Name,
     decimal TargetAmount,
     string CurrencyCode,
-    DateOnly? TargetDate);
+    DateOnly? TargetDate,
+    IReadOnlyCollection<Guid> AccountIds);
 
 public record SavingGoalResponse(
     Guid Id,
     string Name,
     decimal TargetAmount,
     decimal CurrentAmount,
+    decimal RemainingAmount,
+    decimal ProgressPercent,
     string CurrencyCode,
     DateOnly? TargetDate,
+    bool IsCompleted,
     bool IsArchived,
-    DateTime CreationTimeAtUtc);
-
-public record GoalContributionRequest(
-    GoalContributionType Type,
-    decimal Amount,
-    DateTime OccurredAtUtc,
-    string? Note,
-    Guid? TransactionId);
-
-public record GoalContributionResponse(
-    Guid Id,
-    Guid GoalId,
-    GoalContributionType Type,
-    decimal Amount,
-    DateTime OccurredAtUtc,
-    string? Note,
-    Guid? TransactionId,
-    DateTime CreationTimeAtUtc);
+    IReadOnlyCollection<AccountResponse> Accounts,
+    DateTime CreationTimeAtUtc,
+    DateTime UpdateTimeAtUtc);

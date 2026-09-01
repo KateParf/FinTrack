@@ -31,6 +31,6 @@ public static class AmountHelper
 
     public static decimal GetSavingGoalCurrentAmount(SavingsGoal goal)
     {
-        return goal.Contributions.Sum(c => c.Type == GoalContributionType.Deposit ? c.Amount : -c.Amount);
+        return goal.Accounts.Sum(GetAccountBalance);
     }
 }

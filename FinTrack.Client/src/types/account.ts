@@ -36,3 +36,8 @@ export const accountTypeLabels: Record<AccountType, string> = {
     [AccountType.Deposit]: "Вклад",
     [AccountType.Other]: "Другое"
 };
+
+export type AccountOption = {
+    value: string;
+    label: string;
+};

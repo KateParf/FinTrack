@@ -11,7 +11,6 @@ public class ApplicationContext : IdentityDbContext<User, IdentityRole<Guid>, Gu
     public DbSet<Category> Categories { get; set; }
     public DbSet<Transaction> Transactions { get; set; }
     public DbSet<SavingsGoal> SavingsGoals { get; set; }
-    public DbSet<GoalContribution> GoalContributions { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -37,11 +36,19 @@ public class ApplicationContext : IdentityDbContext<User, IdentityRole<Guid>, Gu
                 .HasForeignKey(x => x.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            entity.HasOne(x => x.SavingsGoal)
+                .WithMany(x => x.Accounts)
+                .HasForeignKey(x => x.SavingsGoalId)
+                .OnDelete(DeleteBehavior.SetNull);
+
             entity.HasIndex(x => new
             {
                 x.UserId,
                 x.IsArchived
             });
+
+            // Для поиска целей
+            entity.HasIndex(x => x.SavingsGoalId);
         });
 
         // Category
@@ -124,32 +131,6 @@ public class ApplicationContext : IdentityDbContext<User, IdentityRole<Guid>, Gu
             {
                 x.UserId,
                 x.IsArchived
-            });
-        });
-
-
-        // GoalContribution
-        modelBuilder.Entity<GoalContribution>(entity =>
-        {
-            entity.HasKey(x => x.Id);
-            entity.Property(x => x.Type).HasConversion<short>();
-            entity.Property(x => x.Amount).HasPrecision(18, 2);
-            entity.Property(x => x.Note).HasMaxLength(2000);
-
-            entity.HasOne(x => x.Goal)
-                .WithMany(x => x.Contributions)
-                .HasForeignKey(x => x.GoalId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            entity.HasOne(x => x.Transaction)
-                .WithMany()
-                .HasForeignKey(x => x.TransactionId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            entity.HasIndex(x => new
-            {
-                x.GoalId,
-                x.OccurredAtUtc
             });
         });
     }

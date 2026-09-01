@@ -12,6 +12,8 @@ public class Account
     public bool IsArchived { get; set; }
     public DateTime CreationTimeAtUtc { get; set; }
     public DateTime UpdateTimeAtUtc { get; set; }
+    public Guid? SavingsGoalId { get; set; }
+    public SavingsGoal? SavingsGoal { get; set; }
 
     public ICollection<Transaction> Transactions { get; set; } = [];
 }

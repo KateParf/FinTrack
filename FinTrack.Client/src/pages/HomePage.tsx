@@ -22,6 +22,9 @@ export function HomePage() {
     function handleCategories() {
         navigate("/categories");
     }
+    function handleGoals() {
+        navigate("/saving-goals");
+    }
 
     return (
         <main>
@@ -39,6 +42,7 @@ export function HomePage() {
 
             <button onClick={handleAccounts}>Счета</button>
             <button onClick={handleCategories}>Категории</button>
+            <button onClick={handleGoals}>Накопления</button>
         </main>
     );
 }
