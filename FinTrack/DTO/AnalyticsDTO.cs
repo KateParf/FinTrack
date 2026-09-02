@@ -1,5 +1,3 @@
-using FinTrack.Models;
-
 namespace FinTrack.Dtos;
 
 public record SummaryResponse(

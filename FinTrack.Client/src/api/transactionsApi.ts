@@ -17,7 +17,7 @@ export async function getTransactions(accountId: string, filters: TransactionFil
     if (filters.to) params.set("to", filters.to);
     const query = params.toString();
     return apiRequest<Transaction[]>(
-        `transactions${query ? `?${query}` : ""}`,
+        `transactions?${query}`,
         {
             method: "GET"
         }

@@ -29,7 +29,7 @@ input {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    margin: 0 0 4px 0;
+    margin: 4px;
     font-size: 1.25rem;
     color: #333333;
 }

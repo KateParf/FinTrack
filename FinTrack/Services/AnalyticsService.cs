@@ -15,6 +15,7 @@ public class AnalyticsService
         _context = context;
     }
 
+    // TODO переписать с groupBy по валютам
     public async Task<SummaryResponse> GetSummaryAsync(Guid userId, Guid? accountId, DateTime? from, DateTime? to)
     {
         var query = _context.Transactions.Include(t => t.Account).Where(t => t.Account.UserId == userId);

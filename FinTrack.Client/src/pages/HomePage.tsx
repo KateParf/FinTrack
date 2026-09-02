@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import { AccountsPage } from "./AccountsPage";
+import { AnalyticsPage } from "./AnalyticsPage";
 
 export function HomePage() {
     const { user, signOut } = useAuth();
@@ -31,6 +32,8 @@ export function HomePage() {
             <h1>FinTrack</h1>
             <h2>Приложение для учета личных финансов</h2>
             <h3>Привет, {user?.name}</h3>
+
+            <AnalyticsPage/>
 
             <br/>
 
