@@ -5,7 +5,7 @@ import { getBalanceHistory, getExpensesByCategory, getSummary } from "../api/ana
 import { formatCurrency } from "../utils/formatMoney";
 
 export function AnalyticsPage() {
-    const [summary, setSummary] = useState<Summary>();
+    const [summary, setSummary] = useState<Summary[]>([]);
     const [expenses, setExpenses] = useState<Expenses[]>([]);
     const [balanceHistory, setBalanceHistory] = useState<BalanceHistory[]>([]);
     const [error, setError] = useState<string | null>(null);
@@ -39,39 +39,41 @@ export function AnalyticsPage() {
                 {isLoading && (<p>Загружаем статистику...</p>)}
                 {!isLoading && error && (<p>{error}</p>)}
 
-                {!isLoading && !error && summary &&
-                    (
-                        <div className="card">
-                            <div className="card-title"><h4>Доходы</h4></div>
-                            <div className="card-body">
-                                <div className="card-text">
-                                    {formatCurrency(summary.income, "RUB")}
-                                </div>
+                {!isLoading && !error && summary && (
+                    summary.map(item => (
+                    <div className="card">
+                        <div className="card-title"><h4>Доходы</h4></div>
+                        <div className="card-body">
+                            <div className="card-text">
+                                {formatCurrency(item.income, item.currencyCode)}
                             </div>
                         </div>
-                    )}
+                    </div>
+                )))}
 
                 {!isLoading && !error && summary && (
+                    summary.map(item => (
                     <div className="card">
                         <div className="card-title"><h4>Расходы</h4></div>
                         <div className="card-body">
                             <div className="card-text">
-                                {formatCurrency(summary.expenses, "RUB")}
+                                {formatCurrency(item.expenses, item.currencyCode)}
                             </div>
                         </div>
                     </div>
-                )}
+                )))}
+
                 {!isLoading && !error && summary && (
+                    summary.map(item => (
                     <div className="card">
                         <div className="card-title"><h4>Сбережения</h4></div>
                         <div className="card-body">
                             <div className="card-text">
-                                {formatCurrency(summary.savings, "RUB")}
+                                {formatCurrency(item.savings, item.currencyCode)}
                             </div>
                         </div>
                     </div>
-                )
-                }
+                )))}
             </div>
 
             <div style={{ display: "flex", justifyContent: "space-around" }}>
@@ -82,7 +84,7 @@ export function AnalyticsPage() {
                             <div className="card-body">
                                 {expenses.map(expense => (
                                     <div className="card-text">
-                                        {expense.categoryName}: {formatCurrency(expense.amount, "RUB")}
+                                        {expense.categoryName}: {formatCurrency(expense.amount, expense.currencyCode)}
                                         <progress className="card-text" value={expense.percentage} max="100" style={{ width: '100%' }} />
                                     </div>
                                 ))}
@@ -98,7 +100,7 @@ export function AnalyticsPage() {
                             <div className="card-body">
                                 {balanceHistory.map(hist => (
                                     <div className="card-text">
-                                        {hist.date}: {formatCurrency(hist.amount, "RUB")}
+                                        {hist.date}: {formatCurrency(hist.amount, hist.currencyCode)}
                                     </div>
                                 ))}
                             </div>

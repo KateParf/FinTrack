@@ -8,8 +8,8 @@ export interface Filters {
     to?: string | null;
 }
 
-export async function getSummary(): Promise<Summary> {
-    return apiRequest<Summary>("analytics/summary", {
+export async function getSummary(): Promise<Summary[]> {
+    return apiRequest<Summary[]>("analytics/summary", {
         method: "GET"
     });
 }

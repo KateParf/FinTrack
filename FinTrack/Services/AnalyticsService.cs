@@ -16,9 +16,10 @@ public class AnalyticsService
     }
 
     // TODO переписать с groupBy по валютам
-    public async Task<SummaryResponse> GetSummaryAsync(Guid userId, Guid? accountId, DateTime? from, DateTime? to)
+    public async Task<List<SummaryResponse>> GetSummaryAsync(Guid userId, Guid? accountId, DateTime? from, DateTime? to)
     {
-        var query = _context.Transactions.Include(t => t.Account).Where(t => t.Account.UserId == userId);
+        var query = _context.Transactions.Include(t => t.Account).Where(t => t.Account.UserId == userId
+            && (t.Type == TransactionType.Income || t.Type == TransactionType.Expense));
 
         if (accountId.HasValue)
             query = query.Where(t => t.AccountId == accountId.Value);
@@ -29,22 +30,27 @@ public class AnalyticsService
         if (to.HasValue)
             query = query.Where(t => t.OccurredAtUtc <= to.Value);
 
-        var transactions = await query.ToListAsync();
-        var Expenses = transactions.Where(t => t.Type == TransactionType.Expense)
-            .Sum(t =>
+        var transactions = query.ToList();
+        var result = transactions.GroupBy(t => new { t.Account.CurrencyCode })
+            .Select(c =>
             {
-                AmountHelper.ValidatePositiveAmount(t.Amount);
-                return t.Amount;
-            });
-
-        var Income = transactions.Where(t => t.Type == TransactionType.Income)
-            .Sum(t =>
-            {
-                AmountHelper.ValidatePositiveAmount(t.Amount);
-                return t.Amount;
-            });
-        var Savings = Income - Expenses;
-        return new SummaryResponse(Income, Expenses, Savings);
+                var Expenses = c.Where(t => t.Type == TransactionType.Expense).Sum(s =>
+                {
+                    AmountHelper.ValidatePositiveAmount(s.Amount);
+                    return s.Amount;
+                });
+                var Income = c.Where(t => t.Type == TransactionType.Income).Sum(s =>
+                {
+                    AmountHelper.ValidatePositiveAmount(s.Amount);
+                    return s.Amount;
+                });
+                return new SummaryResponse(
+                    c.Key.CurrencyCode,
+                    Income,
+                    Expenses,
+                    Income - Expenses);
+            }).ToList();
+        return result;
     }
 
     public async Task<List<ExpensesResponse>> GetExpensesAsync(Guid userId, Guid? accountId, DateTime? from, DateTime? to)
@@ -61,40 +67,51 @@ public class AnalyticsService
         if (to.HasValue)
             query = query.Where(t => t.OccurredAtUtc <= to.Value);
 
-        var transactions = await query.ToListAsync();
-        var totalExpenses = transactions.Sum(t =>
+        var grouped = await query.GroupBy(t => new
         {
-            AmountHelper.ValidatePositiveAmount(t.Amount);
-            return t.Amount;
-        });
+            t.Account.CurrencyCode,
+            CategoryId = t.CategoryId!.Value,
+            CategoryName = t.Category!.Name
+        }).Select(g => new
+        {
+            g.Key.CurrencyCode,
+            g.Key.CategoryId,
+            g.Key.CategoryName,
+            Amount = g.Sum(a => a.Amount)
+        }).ToListAsync();
 
-        var result = transactions
-            .GroupBy(t => new { t.CategoryId, t.Category!.Name })
-            .Select(c =>
+        var totalsByCurrency = grouped.GroupBy(c => c.CurrencyCode)
+        .ToDictionary(g => g.Key,
+            g => g.Sum(t =>
             {
-                var amount = c.Sum(q =>
-                {
-                    AmountHelper.ValidatePositiveAmount(q.Amount);
-                    return q.Amount;
-                });
-                return new ExpensesResponse(
-                    c.Key.CategoryId!.Value,
-                    c.Key.Name,
-                    amount,
-                    totalExpenses == 0 ? 0 : amount / totalExpenses * 100);
-            }).ToList();
+                AmountHelper.ValidatePositiveAmount(t.Amount);
+                return t.Amount;
+            }));
 
-        return result;
+        return grouped.Select(c =>
+        {
+            var totalExpenses = totalsByCurrency[c.CurrencyCode];
+            return new ExpensesResponse(
+                c.CategoryId,
+                c.CategoryName,
+                c.CurrencyCode,
+                c.Amount,
+                totalExpenses == 0 ? 0 : c.Amount / totalExpenses * 100);
+        }).OrderByDescending(a => a.Amount).ToList();
     }
 
     public async Task<List<BalanceHistoryResponse>> GetBalanceHistoryAsync(Guid userId, Guid? accountId, DateTime? from, DateTime? to, string groupBy)
     {
+        if (groupBy is not ("day" or "week" or "month" or "year"))
+            throw new InvalidOperationException("Invalid groupBy value");
+
         var accountsQuery = _context.Accounts.Where(a => a.UserId == userId);
 
         if (accountId.HasValue)
             accountsQuery = accountsQuery.Where(a => a.Id == accountId.Value);
 
-        var openingBalance = await accountsQuery.SumAsync(a => a.OpeningBalance);
+        var openingBalance = accountsQuery.GroupBy(a => a.CurrencyCode)
+            .ToDictionary(g => g.Key, g => g.Sum(o => o.OpeningBalance));
 
         var allTransactionsQuery = _context.Transactions.Include(t => t.Account)
             .Where(t => t.Account.UserId == userId);
@@ -106,8 +123,22 @@ public class AnalyticsService
         if (from.HasValue)
         {
             var transactionsBeforePeriod = await allTransactionsQuery
-                .Where(t => t.OccurredAtUtc < from.Value).ToListAsync();
-            balanceBeforePeriod += transactionsBeforePeriod.Sum(t => AmountHelper.GetSignedTransactionAmount(t.Type, t.Amount));
+                .Where(t => t.OccurredAtUtc < from.Value).GroupBy(t => t.Account.CurrencyCode)
+                .Select(g => new
+                {
+                    CurrencyCode = g.Key,
+                    Amount = g.Sum(t =>
+                        t.Type == TransactionType.Income || t.Type == TransactionType.TransferIn ? 
+                        t.Amount 
+                        : t.Type == TransactionType.Expense || t.Type == TransactionType.TransferOut ? 
+                        -t.Amount : 0m)
+                }).ToListAsync();
+
+            foreach (var currency in transactionsBeforePeriod)
+            {
+                balanceBeforePeriod.TryGetValue(currency.CurrencyCode, out var currentBalance);
+                balanceBeforePeriod[currency.CurrencyCode] = currentBalance + currency.Amount;
+            }
         }
 
         if (from.HasValue)
@@ -116,55 +147,92 @@ public class AnalyticsService
         if (to.HasValue)
             allTransactionsQuery = allTransactionsQuery.Where(t => t.OccurredAtUtc <= to.Value);
 
-        var transactions = await allTransactionsQuery.ToListAsync();
-
         var groupedAmounts = groupBy switch
         {
-            "day" => transactions.GroupBy(t => t.OccurredAtUtc.Date)
+            "day" => allTransactionsQuery.GroupBy(t => new { t.Account.CurrencyCode, t.OccurredAtUtc.Date })
                 .Select(g => new
                 {
-                    SortKey = g.Key,
-                    Label = g.Key.ToString("yyyy-MM-dd"),
-                    Amount = g.Sum(t => AmountHelper.GetSignedTransactionAmount(t.Type, t.Amount))
+                    g.Key.CurrencyCode,
+                    g.Key.Date,
+                    SortKey = g.Key.Date,
+                    Label = g.Key.Date.ToString("yyyy-MM-dd"),
+                    Amount = g.Sum(t =>
+                        t.Type == TransactionType.Income || t.Type == TransactionType.TransferIn ? 
+                        t.Amount 
+                        : t.Type == TransactionType.Expense || t.Type == TransactionType.TransferOut ? 
+                        -t.Amount : 0m)
                 }).ToList(),
 
-            "week" => transactions.GroupBy(t => new
+            "week" => allTransactionsQuery.GroupBy(t => new
             {
+                t.Account.CurrencyCode,
                 Year = ISOWeek.GetYear(t.OccurredAtUtc),
                 Week = ISOWeek.GetWeekOfYear(t.OccurredAtUtc)
             }).Select(g => new
             {
+                g.Key.CurrencyCode,
+                Date = DateHelper.FirstDateOfIsoWeek(g.Key.Year, g.Key.Week),
                 SortKey = DateHelper.FirstDateOfIsoWeek(g.Key.Year, g.Key.Week),
                 Label = $"{g.Key.Year}-W{g.Key.Week:D2}",
-                Amount = g.Sum(t => AmountHelper.GetSignedTransactionAmount(t.Type, t.Amount))
+                Amount = g.Sum(t =>
+                        t.Type == TransactionType.Income || t.Type == TransactionType.TransferIn ? 
+                        t.Amount 
+                        : t.Type == TransactionType.Expense || t.Type == TransactionType.TransferOut ? 
+                        -t.Amount : 0m)
             }).ToList(),
 
-            "month" => transactions.GroupBy(t => new DateTime(t.OccurredAtUtc.Year, t.OccurredAtUtc.Month, 1))
-                .Select(g => new
-                {
-                    SortKey = g.Key,
-                    Label = g.Key.ToString("yyyy-MM"),
-                    Amount = g.Sum(t => AmountHelper.GetSignedTransactionAmount(t.Type, t.Amount))
-                }).ToList(),
+            "month" => allTransactionsQuery.GroupBy(t => new
+            {
+                t.Account.CurrencyCode,
+                Year = t.OccurredAtUtc.Date.Year,
+                Month = t.OccurredAtUtc.Date.Month
+            }).Select(g => new
+            {
+                g.Key.CurrencyCode,
+                Date = new DateTime(g.Key.Year, g.Key.Month, 1),
+                SortKey = new DateTime(g.Key.Year, g.Key.Month, 1),
+                Label = new DateTime(g.Key.Year, g.Key.Month, 1).ToString("yyyy-MM"),
+                Amount = g.Sum(t =>
+                        t.Type == TransactionType.Income || t.Type == TransactionType.TransferIn ? 
+                        t.Amount 
+                        : t.Type == TransactionType.Expense || t.Type == TransactionType.TransferOut ? 
+                        -t.Amount : 0m)
+            }).ToList(),
 
-            "year" => transactions.GroupBy(t => new DateTime(t.OccurredAtUtc.Year, 1, 1))
-                .Select(g => new
-                {
-                    SortKey = g.Key,
-                    Label = g.Key.Year.ToString(),
-                    Amount = g.Sum(t => AmountHelper.GetSignedTransactionAmount(t.Type, t.Amount))
-                }).ToList(),
+            "year" => allTransactionsQuery.GroupBy(t => new
+            {
+                t.Account.CurrencyCode,
+                Year = t.OccurredAtUtc.Date.Year
+            }).Select(g => new
+            {
+                g.Key.CurrencyCode,
+                Date = new DateTime(g.Key.Year, 1, 1),
+                SortKey = new DateTime(g.Key.Year, 1, 1),
+                Label = new DateTime(g.Key.Year, 1, 1).ToString(),
+                Amount = g.Sum(t =>
+                        t.Type == TransactionType.Income || t.Type == TransactionType.TransferIn ? 
+                        t.Amount 
+                        : t.Type == TransactionType.Expense || t.Type == TransactionType.TransferOut ? 
+                        -t.Amount : 0m)
+            }).ToList(),
 
             _ => throw new InvalidOperationException("Invalid groupBy value")
         };
 
-        var runningBalance = balanceBeforePeriod;
-        var result = groupedAmounts.OrderBy(g => g.SortKey)
-            .Select(g =>
-            {
-                runningBalance += g.Amount;
-                return new BalanceHistoryResponse(g.Label, runningBalance);
-            }).ToList();
+        var runningBalances = balanceBeforePeriod;
+        var result = new List<BalanceHistoryResponse>();
+        foreach (var row in groupedAmounts.OrderBy(x => x.CurrencyCode).ThenBy(x => x.SortKey))
+        {
+            runningBalances.TryGetValue(row.CurrencyCode, out var currentBalance);
+            currentBalance += row.Amount;
+
+            runningBalances[row.CurrencyCode] = currentBalance;
+
+            result.Add(new BalanceHistoryResponse(
+                row.CurrencyCode,
+                row.Label,
+                currentBalance));
+        }
         return result;
     }
 
