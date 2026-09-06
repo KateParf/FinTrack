@@ -28,39 +28,37 @@ export function LoginPage() {
     }
 
     return (
-        <main>
-            <form className="auth-card" onSubmit={handleSubmit}>
-                <h1 className="card-title">Вход</h1>
-                <div className="card-body">
-                    <div className="card-text">
-                        <label htmlFor="email">Email </label>
-                        <input id="email" type="email" value={email}
-                            onChange={event =>
-                                setEmail(event.target.value)
-                            }
-                            required />
+        <div className="align-content-center vh-100">
+            <div className="d-flex flex-column align-items-center">
+                <form className="card col-3 py-3" onSubmit={handleSubmit}>
+                    <div className="card-body">
+                        <h3 className="card-title text-center mb-3">Вход</h3>
+                        <div className="card-text form-floating">
+                            <input className="form-control" id="email" type="email" value={email} placeholder="name@example.com"
+                                onChange={event =>
+                                    setEmail(event.target.value)
+                                }
+                                required />
+                            <label className="form-label" htmlFor="email">Email</label>
+                        </div>
+
+                        <div className="card-text form-floating">
+                            <input className="form-control" id="password" type="password" value={password} placeholder="Password_123"
+                                onChange={event =>
+                                    setPassword(event.target.value)
+                                }
+                                required />
+                            <label className="form-label" htmlFor="password">Пароль</label>
+                        </div>
+
+                        {error && (<p className="card-text">{error}</p>)}
+
+                        <button className="btn card-btn w-100" type="submit" disabled={isLoading}>{isLoading ? "Входим..." : "Войти"}</button>
                     </div>
-
-                    <div className="card-text">
-                        <label htmlFor="password">Пароль </label>
-                        <input id="password" type="password" value={password}
-                            onChange={event =>
-                                setPassword(event.target.value)
-                            }
-                            required />
-                    </div>
-
-                    {error && (<p>{error}</p>)}
-
-                    <button className="card-btn" type="submit" disabled={isLoading}>{isLoading ? "Входим..." : "Войти"}</button>
-                </div>
-            </form>
-
-            <div>
-                Нет аккаунта?{" "}
-                <Link to="/register"> Зарегистрироваться </Link>
+                </form>
+                <p className="card-text col-auto m-2">Нет аккаунта?</p>
+                <Link className="btn card-btn col-auto" to="/register">Зарегистрироваться</Link>
             </div>
-
-        </main>
+        </div>
     );
 }

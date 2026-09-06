@@ -36,20 +36,21 @@ export function UpdateAccountForm({ account, onSave, onCancel }: UpdateAccountFo
     }
 
     return (
-        <form className="card" onSubmit={handleSubmit}>
-            <div className="card-body">
-                <div className="card-text">
-                    <label htmlFor="name">Название </label>
-                    <input id="name" value={name}
+        <form className="card-body" onSubmit={handleSubmit}>
+            <div className="row align-items-end g-3">
+
+                <div className="col-lg-6">
+                    <label htmlFor="name" className="form-label">Название </label>
+                    <input id="name" value={name} className="form-control"
                         onChange={event =>
                             setName(event.target.value)
                         }
                         required />
                 </div>
 
-                <div className="card-text">
-                    <label htmlFor="type">Тип </label>
-                    <select id="type" value={type}
+                <div className="col-lg-2">
+                    <label htmlFor="type" className="form-label">Тип</label>
+                    <select id="type" value={type} className="form-select"
                         onChange={event => {
                             const value = event.target.value;
                             setType(Number(value) as AccountType)
@@ -58,8 +59,16 @@ export function UpdateAccountForm({ account, onSave, onCancel }: UpdateAccountFo
                     </select>
                 </div>
 
-                <button className="card-btn" type="submit" disabled={isSubmitting}>{isSubmitting ? "Обновляем..." : "Обновить"}</button>
-                <button className="card-btn" type="button" onClick={() => onCancel()}>Отмена</button>
+                <div className="col-lg-4">
+                    <div className="d-flex gap-2 justify-content-end">
+                        <button className="btn card-btn" type="submit" disabled={isSubmitting}>
+                            {isSubmitting ? "Обновляем..." : "Обновить"}
+                        </button>
+                        <button className="btn" type="button" onClick={onCancel} disabled={isSubmitting}>
+                            Отмена
+                        </button>
+                    </div>
+                </div>
             </div>
         </form>
     );

@@ -49,50 +49,55 @@ export function CreateAccountForm({ onCreate }: CreateAccountFormProps) {
     }
 
     return (
-        <form className="card" onSubmit={handleSubmit}>
-            <div className="card-body">
-                <div className="card-text">
-                    <label htmlFor="name">Название </label>
-                    <input id="name" value={name}
-                        onChange={event =>
-                            setName(event.target.value)
-                        }
-                        required />
-                </div>
+        <article className="card col-12 ms-0 mb-3">
+            <form className="card-body" onSubmit={handleSubmit}>
+                <div className="row align-items-end g-3">
 
-                <div className="card-text">
-                    <label htmlFor="type">Тип </label>
-                    <select id="type" value={type}
-                        onChange={event => {
-                            const value = event.target.value;
-                            setType(Number(value) as AccountType)
-                        }}>
-                        {typeOptions}
-                    </select>
-                </div>
+                    <div className="col-lg-6">
+                        <label htmlFor="name" className="form-label">Название </label>
+                        <input id="name" value={name} className="form-control"
+                            onChange={event =>
+                                setName(event.target.value)
+                            }
+                            required />
+                    </div>
 
-                <div className="card-text">
-                    <label htmlFor="baseCurrency">Валюта </label>
-                    <select id="currency" value={currencyCode}
-                        onChange={event =>
-                            setCurrencyCode(event.target.value)
-                        }
-                        required>
-                        {currencyOptions}
-                    </select>
-                </div>
+                    <div className="col-lg-2">
+                        <label htmlFor="type" className="form-label">Тип</label>
+                        <select id="type" value={type} className="form-select"
+                            onChange={event => {
+                                const value = event.target.value;
+                                setType(Number(value) as AccountType)
+                            }}>
+                            {typeOptions}
+                        </select>
+                    </div>
 
-                <div className="card-text">
-                    <label htmlFor="openingBalance">Начальный баланс </label>
-                    <input id="openingBalance" type="number" min="0" step="0.01" value={openingBalance}
-                        onChange={event =>
-                            setBalance(event.target.value)
-                        }
-                    required />
-                </div>
+                    <div className="col-lg-1">
+                        <label htmlFor="baseCurrency" className="form-label">Валюта </label>
+                        <select id="currency" value={currencyCode} className="form-select"
+                            onChange={event =>
+                                setCurrencyCode(event.target.value)
+                            }
+                            required>
+                            {currencyOptions}
+                        </select>
+                    </div>
 
-                <button className="card-btn" type="submit" disabled={isSubmitting}>{isSubmitting ? "Создаём..." : "Создать"}</button>
-            </div>
-        </form>
+                    <div className="col-lg-2">
+                        <label htmlFor="openingBalance" className="form-label">Начальный баланс </label>
+                        <input id="openingBalance" type="number" min="0" step="0.01" value={openingBalance}
+                            className="form-control"
+                            onChange={event =>
+                                setBalance(event.target.value)
+                            }
+                            required />
+                    </div>
+                    <div className="col-lg-1">
+                        <button className="btn" type="submit" disabled={isSubmitting}>{isSubmitting ? "Создаём..." : "Создать"}</button>
+                    </div>
+                </div>
+            </form>
+        </article>
     );
 }

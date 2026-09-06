@@ -21,8 +21,10 @@ export async function apiRequest<T>(path: string, options: RequestInit = {}): Pr
         }
     );
 
-    if (!response.ok)
-        throw new ApiError(response.status, `API request failed: ${response.status}`);
+    if (!response.ok) {
+        const errorText = await response.text();
+        throw new ApiError(response.status, `Ошибка сервера (${response.status}): ${errorText}`);
+    }
     if (response.status === 204) return undefined as T;
     return response.json();
 }

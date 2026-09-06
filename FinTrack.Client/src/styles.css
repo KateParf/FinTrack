@@ -1,24 +1,27 @@
-* {
-    box-sizing: border-box;
+:root {
+    --primary-color: #EE9B01;
+    /* Основной цвет */
+    --primary-color-dark: #DA6A00;
+    --secondary-color: #68904D;
+    /* Дополнительный цвет */
+    --secondary-color-dark: #14471E;
+    /* Дополнительный цвет */
+    --background-color: #C8D2D150;
+    /* Цвет фона */
+    --text-color: #333333;
+    /* Цвет текста */
 }
 
 body {
-    margin: 10px;
+    color: var(--text-color);
     font-family: Arial, sans-serif;
 }
 
-button,
-input {
-    font: inherit;
-}
-
 .card {
-    width: fit-content;
     margin: 8px;
-    background-color: #a1c0c250;
+    background-color: var(--background-color);
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    font-family: sans-serif;
 }
 
 .card-body {
@@ -26,34 +29,63 @@ input {
 }
 
 .card-title {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    margin: 4px;
-    font-size: 1.25rem;
-    color: #333333;
+    color: var(--secondary-color-dark);
 }
 
 .card-text {
     margin: 0 0 16px 0;
-    font-size: 0.95rem;
-    color: #666666;
+    color: var(--text-color);
     line-height: 1.4;
 }
 
-.card-btn {
-    width: auto;
-    height: 100%;
-    padding: 10px;    
-    background-color: #729969;
-    color: #ffffff;    
+.btn {
+    padding: 10px;
+    background-color: var(--secondary-color);
+    color: #ffffff;
     border: none;
     border-radius: 4px;
-    font-size: 0.9rem;
     cursor: pointer;
     font-weight: bold;
 }
 
+.btn:hover {
+    background-color: var(--secondary-color-dark);
+}
+
+.card-btn {
+    background-color: var(--primary-color);
+}
+
 .card-btn:hover {
-    background-color: #223125;
+    background-color: var(--primary-color-dark);
+}
+
+.form-check-input:checked {
+    background-color: var(--primary-color-dark);
+    border: 0;
+}
+
+.form-control:focus,
+.form-control:focus-visible,
+.form-select:focus,
+.form-select:focus-visible,
+.form-check-input:focus,
+.form-check-input:focus-visible {
+    border: none;
+    box-shadow: 0 0 0 .25rem #EE9B0140;
+}
+
+.form-control:autofill,
+.form-select:autofill,
+.form-check-input:autofill {
+    -webkit-box-shadow: 0 0 0px 40rem #C8D2D1 inset;
+}
+
+.account-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--secondary-color-dark);
 }

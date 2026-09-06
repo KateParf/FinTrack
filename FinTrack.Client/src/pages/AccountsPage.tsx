@@ -60,13 +60,17 @@ export function AccountsPage() {
     }
 
     return (
-        <div>
-            <h1>Ваши счета</h1>
+        <div className="m-4 border-start ps-4">
+            <div className="row d-flex justify-content-between">
+                <div className="col-auto h2"> Ваши счета </div>
+                <button className="col-auto btn"> +&nbsp;Новый счёт</button>
+            </div>
 
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="type">Тип </label>
-                    <select id="type" value={type ?? ""}
+            <form className="row d-flex justify-content-start align-items-end pb-3 border-bottom"
+                onSubmit={handleSubmit}>
+                <div className="col-auto">
+                    <label className="form-label m-0" htmlFor="type">Тип счета</label>
+                    <select className="form-select" id="type" value={type ?? ""}
                         onChange={event => {
                             const value = event.target.value;
                             setType(value === "" ? null : Number(value) as AccountType)
@@ -77,9 +81,9 @@ export function AccountsPage() {
                     </select>
                 </div>
 
-                <div>
-                    <label htmlFor="archived">
-                        <input id="archived" type="checkbox" checked={includeArchived}
+                <div className="col-auto form-check form-switch mb-2">
+                    <label className="form-check-label" htmlFor="archived">
+                        <input className="form-check-input me-2" id="archived" type="checkbox" role="switch" checked={includeArchived}
                             onChange={event =>
                                 setIncludeArchived(event.target.checked)
                             }
@@ -88,20 +92,20 @@ export function AccountsPage() {
                     </label>
                 </div>
 
-                <button type="submit" disabled={isLoading}>
+                <button className="col-auto btn card-btn" type="submit" disabled={isLoading}>
                     {isLoading ? "Загружаем..." : "Применить"}
                 </button>
             </form>
 
-            <div>
+            <div className="pt-3">
                 {isLoading && (<p>Загружаем счета...</p>)}
                 {!isLoading && error && (<p>{error}</p>)}
                 {!isLoading && !error && accounts.length === 0 && (<p>У вас пока нет счетов</p>)}
 
                 {!isLoading && !error &&
                     accounts.map(account => (
-                        <AccountCard key={account.id} account={account} 
-                        onArchive={handleArchive} onRestore={handleRestore} onUpdate={handleUpdate}/>
+                        <AccountCard key={account.id} account={account}
+                            onArchive={handleArchive} onRestore={handleRestore} onUpdate={handleUpdate} />
                     ))}
             </div>
 

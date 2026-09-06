@@ -3,6 +3,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { BalanceHistory, Expenses, Summary } from "../types/analytics";
 import { getBalanceHistory, getExpensesByCategory, getSummary } from "../api/analyticsApi";
 import { formatCurrency } from "../utils/formatMoney";
+import { CircleFill } from "react-bootstrap-icons";
 
 export function AnalyticsPage() {
     const [summary, setSummary] = useState<Summary[]>([]);
@@ -33,16 +34,18 @@ export function AnalyticsPage() {
     }
     useEffect(() => { void loadAnalytics(); }, []);
 
+    const getRandomColor = () => `hsl(${Math.random() * 360}, 70%, 50%)`;
+
     return (
-        <div>
-            <div style={{ display: "flex", justifyContent: "space-around" }}>
+        <div className="m-4">
+            <div className="row">
                 {isLoading && (<p>Загружаем статистику...</p>)}
                 {!isLoading && error && (<p>{error}</p>)}
 
                 {!isLoading && !error && summary && (
                     summary.map(item => (
-                    <div className="card">
-                        <div className="card-title"><h4>Доходы</h4></div>
+                    <div className="card col">
+                        <div className="card-title h4 mt-3 mb-0">Доходы</div>
                         <div className="card-body">
                             <div className="card-text">
                                 {formatCurrency(item.income, item.currencyCode)}
@@ -53,8 +56,8 @@ export function AnalyticsPage() {
 
                 {!isLoading && !error && summary && (
                     summary.map(item => (
-                    <div className="card">
-                        <div className="card-title"><h4>Расходы</h4></div>
+                    <div className="card col">
+                        <div className="card-title h4 mt-3 mb-0">Расходы</div>
                         <div className="card-body">
                             <div className="card-text">
                                 {formatCurrency(item.expenses, item.currencyCode)}
@@ -65,8 +68,8 @@ export function AnalyticsPage() {
 
                 {!isLoading && !error && summary && (
                     summary.map(item => (
-                    <div className="card">
-                        <div className="card-title"><h4>Сбережения</h4></div>
+                    <div className="card col">
+                        <div className="card-title h4 mt-3 mb-0">Сбережения</div>
                         <div className="card-body">
                             <div className="card-text">
                                 {formatCurrency(item.savings, item.currencyCode)}
@@ -76,16 +79,16 @@ export function AnalyticsPage() {
                 )))}
             </div>
 
-            <div style={{ display: "flex", justifyContent: "space-around" }}>
+            <div className="row d-flex">
                 {!isLoading && !error && expenses.length > 0 &&
                     (
-                        <div className="card">
-                            <div className="card-title"><h4>Расходы по категориям</h4></div>
+                        <div className="card col">
+                            <div className="card-title h4 mt-3 mb-0">Расходы по категориям</div>
                             <div className="card-body">
                                 {expenses.map(expense => (
-                                    <div className="card-text">
+                                    <div className="card-text d-flex align-items-center">
+                                        <CircleFill className="me-2" style={{ color: getRandomColor() }}></CircleFill>
                                         {expense.categoryName}: {formatCurrency(expense.amount, expense.currencyCode)}
-                                        <progress className="card-text" value={expense.percentage} max="100" style={{ width: '100%' }} />
                                     </div>
                                 ))}
                             </div>
@@ -95,8 +98,8 @@ export function AnalyticsPage() {
 
                 {!isLoading && !error && balanceHistory.length > 0 &&
                     (
-                        <div className="card">
-                            <div className="card-title"><h4>История баланса</h4></div>
+                        <div className="card col">
+                            <div className="card-title h4 mt-3 mb-0">История баланса</div>
                             <div className="card-body">
                                 {balanceHistory.map(hist => (
                                     <div className="card-text">
