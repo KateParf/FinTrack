@@ -1,10 +1,10 @@
 import { FormEvent, useState } from "react";
-import { Account, accountTypeLabels, UpdateAccountRequest } from "../../types/account";
+import { Account, AccountType, accountTypeLabels, UpdateAccountRequest } from "../../types/account";
 import { formatCurrency } from "../../utils/formatMoney";
 import { UpdateAccountForm } from "./UpdateAccountForm";
 import { Link } from "react-router-dom";
 import { formatDateTime } from "../../utils/formatDateTime";
-import { Wallet2 } from "react-bootstrap-icons";
+import { CashCoin, CashStack, CreditCard, PiggyBank, Wallet2 } from "react-bootstrap-icons";
 
 interface AccountCardProps {
     account: Account;
@@ -15,6 +15,23 @@ interface AccountCardProps {
 
 export function AccountCard({ account, onArchive, onRestore, onUpdate }: AccountCardProps) {
     const [isEditing, setIsEditing] = useState(false);
+
+    const renderAccountTypeIcon = (value: AccountType) => {
+        switch (value) {
+            case AccountType.Cash:
+                return <CashCoin className="fs-4" />;
+            case AccountType.DebitCard:
+                return <CreditCard className="fs-4" />;
+            case AccountType.Deposit:
+                return <CashStack className="fs-4" />;
+            case AccountType.Savings:
+                return <PiggyBank className="fs-4" />;
+            case AccountType.Other:
+                return <Wallet2 className="fs-4" />;
+            default:
+                return <Wallet2 className="fs-4" />;
+        }
+    };
 
     if (isEditing) {
         return (
@@ -32,7 +49,7 @@ export function AccountCard({ account, onArchive, onRestore, onUpdate }: Account
                     <div className="col-lg-6">
                         <div className="d-flex align-items-center gap-3">
                             <div className="account-icon text-white rounded p-2">
-                                <Wallet2 className="fs-4" />
+                                {renderAccountTypeIcon(account.type)}
                             </div>
 
                             <div>

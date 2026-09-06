@@ -41,6 +41,7 @@ builder.Services.AddScoped<TransfersService>();
 builder.Services.AddScoped<SavingGoalsService>();
 builder.Services.AddScoped<UsersService>();
 builder.Services.AddScoped<JwtTokenService>();
+builder.Services.AddScoped<RefreshTokenService>();
 builder.Services.AddScoped<AnalyticsService>();
 
 // Add DbContext

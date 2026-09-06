@@ -11,6 +11,7 @@ public class ApplicationContext : IdentityDbContext<User, IdentityRole<Guid>, Gu
     public DbSet<Category> Categories { get; set; }
     public DbSet<Transaction> Transactions { get; set; }
     public DbSet<SavingsGoal> SavingsGoals { get; set; }
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -21,6 +22,20 @@ public class ApplicationContext : IdentityDbContext<User, IdentityRole<Guid>, Gu
         {
             entity.Property(x => x.Name).IsRequired().HasMaxLength(100);
             entity.Property(x => x.BaseCurrency).IsRequired().HasMaxLength(3);
+        });
+
+        // RefreshToken
+        modelBuilder.Entity<RefreshToken>(entity =>
+        {
+            entity.HasKey(x => x.Id);
+            entity.Property(x => x.TokenHash).IsRequired().HasMaxLength(64);
+            entity.HasIndex(x => x.TokenHash).IsUnique();
+            entity.HasIndex(x => new { x.UserId, x.FamilyId });
+
+            entity.HasOne(x => x.User)
+                .WithMany(x => x.RefreshTokens)
+                .HasForeignKey(x => x.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         // Account

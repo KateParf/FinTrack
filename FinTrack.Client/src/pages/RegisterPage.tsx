@@ -1,8 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
 import { FormEvent, useState } from "react";
-import { register } from "../api/authApi";
-import { saveAccessToken } from "../auth/tokenStorage";
-import { AuthResponse } from "../types/auth";
 import { useAuth } from "../auth/AuthContext";
 
 export function RegisterPage() {

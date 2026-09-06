@@ -11,4 +11,5 @@ public class User : IdentityUser<Guid>
     public ICollection<Account> Accounts { get; set; } = [];
     public ICollection<Category> Categories { get; set; } = [];
     public ICollection<SavingsGoal> SavingsGoals { get; set; } = [];
+    public ICollection<RefreshToken> RefreshTokens { get; set; } = [];
 }
