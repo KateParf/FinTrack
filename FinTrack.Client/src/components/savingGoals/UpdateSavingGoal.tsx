@@ -113,7 +113,7 @@ export function UpdateSavingGoalForm({ goal, accounts, onSave, onCancel }: Updat
 
                 <div className="col-lg-2">
                     <label htmlFor="accountIds" className="form-label">Привяжите счета</label>
-                    <Select<AccountOption, true>
+                    <Select<AccountOption, true> placeholder="Ваши накопительные счета"
                         inputId="accountIds" isMulti classNamePrefix="my-select" 
                         options={availableAccounts} value={selectedAccounts}
                         onChange={selectedOptions => {

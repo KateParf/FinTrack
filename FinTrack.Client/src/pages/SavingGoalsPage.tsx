@@ -61,9 +61,9 @@ export function SavingGoalsPage() {
     }
 
     return (
-        <div className="m-4 border-start ps-4">
+        <div className="m-4">
             <div className="row d-flex justify-content-between">
-                <div className="col-auto h2"> Ваши цели для накоплений </div>
+                <h2 className="col-auto"> Ваши цели для накоплений </h2>
                 <button className="col-auto btn"> +&nbsp;Новая цель</button>
             </div>
 
@@ -86,15 +86,18 @@ export function SavingGoalsPage() {
             </form>
 
             <div className="pt-3">
-                {isLoading && (<p>Загружаем цели...</p>)}
-                {!isLoading && error && (<p>{error}</p>)}
-                {!isLoading && !error && savingGoals.length === 0 && (<p>У вас пока нет целей</p>)}
+                {isLoading && (<p className="py-4 text-secondary">Загружаем цели...</p>)}
+                {!isLoading && error && (<p className="alert alert-danger mt-4">{error}</p>)}
+                {!isLoading && !error && savingGoals.length === 0 && (
+                    <p className="py-5 text-center text-secondary">У вас пока нет целей</p>
+                )}
 
                 {!isLoading && !error &&
                     savingGoals.map(goal => (
                         <SavingGoalCard key={goal.id} goal={goal} accounts={accounts}
                             onArchive={handleArchive} onRestore={handleRestore} onUpdate={handleUpdate} />
-                    ))}
+                    ))
+                }
             </div>
 
             <div>

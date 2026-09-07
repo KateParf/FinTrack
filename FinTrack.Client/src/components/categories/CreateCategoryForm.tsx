@@ -1,10 +1,10 @@
 import { FormEvent, useState } from "react";
-import { Category, CategoryType, categoryTypeLabels } from "../../types/category";
+import { CategoryType, categoryTypeLabels } from "../../types/category";
 import { createCategory } from "../../api/categoriesApi";
-import { flattenCategoriesWithDepth } from "../../utils/flattenCategories";
+import { CategoryWithDepth } from "../../utils/flattenCategories";
 
 interface CreateCategoryFormProps {
-    categories: Category[];
+    categories: CategoryWithDepth[];
     onCreate: () => Promise<void>;
 }
 
@@ -19,7 +19,7 @@ export function CreateCategoryForm({ categories, onCreate }: CreateCategoryFormP
         <option key={type} value={type}>{label}</option>
     ));
 
-    const allCategories = flattenCategoriesWithDepth(categories).filter(category => !category.category.isArchived);
+    const allCategories = categories.filter(category => !category.category.isArchived);
 
     function handleParentChange(value: string) {
         if (value === "") {
@@ -54,45 +54,49 @@ export function CreateCategoryForm({ categories, onCreate }: CreateCategoryFormP
     }
 
     return (
-        <form className="card" onSubmit={handleSubmit}>
-            <div className="card-body">
-                <div className="card-text">
-                    <label htmlFor="name">Название </label>
-                    <input id="name" value={name}
-                        onChange={event =>
-                            setName(event.target.value)
-                        }
-                        required />
-                </div>
+        <article className="card col-12 ms-0 mb-3">
+            <form className="card-body" onSubmit={handleSubmit}>
+                <div className="row align-items-end">
+                    <div className="col-lg-4">
+                        <label htmlFor="name" className="form-label">Название </label>
+                        <input id="name" value={name} className="form-control"
+                            onChange={event =>
+                                setName(event.target.value)
+                            }
+                            required />
+                    </div>
 
-                <div className="card-text">
-                    <label htmlFor="type">Тип </label>
-                    <select id="type" value={type} disabled={parentCategoryId !== null}
-                        onChange={event => {
-                            const value = event.target.value;
-                            setType(Number(value) as CategoryType)
-                        }}>
-                        {typeOptions}
-                    </select>
-                </div>
+                    <div className="col-lg-2">
+                        <label htmlFor="type" className="form-label">Тип </label>
+                        <select id="type" value={type}
+                            className="form-select" disabled={parentCategoryId !== null}
+                            onChange={event => {
+                                const value = event.target.value;
+                                setType(Number(value) as CategoryType)
+                            }}>
+                            {typeOptions}
+                        </select>
+                    </div>
 
-                <div className="card-text">
-                    <label htmlFor="parentCategory">Общая категория </label>
-                    <select id="parentCategory" value={parentCategoryId ?? ""}
-                        onChange={event =>
-                            handleParentChange(event.target.value)
-                        }>
-                        <option value="">Без общей категории</option>
-                        {allCategories.map(({ category, depth }) => (
-                            <option key={category.id} value={category.id}>
-                                {"— ".repeat(depth)}{category.name}
-                            </option>
-                        ))}
-                    </select>
+                    <div className="col-lg-4">
+                        <label htmlFor="parentCategory" className="form-label">Общая категория </label>
+                        <select id="parentCategory" value={parentCategoryId ?? ""} className="form-select"
+                            onChange={event =>
+                                handleParentChange(event.target.value)
+                            }>
+                            <option value="">Без общей категории</option>
+                            {allCategories.map(({ category, depth }) => (
+                                <option key={category.id} value={category.id}>
+                                    {"— ".repeat(depth)}{category.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="col-lg-2 d-flex justify-content-end">
+                        <button className="btn" type="submit" disabled={isSubmitting}>{isSubmitting ? "Создаём..." : "Создать"}</button>
+                    </div>
                 </div>
-
-                <button className="card-btn" type="submit" disabled={isSubmitting}>{isSubmitting ? "Создаём..." : "Создать"}</button>
-            </div>
-        </form>
+            </form>
+        </article>
     );
 }

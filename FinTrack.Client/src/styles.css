@@ -106,6 +106,22 @@ body {
     background-color: var(--primary-color-dark);
 }
 
+.category-icon {
+    width: 48px;
+    height: 48px;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.category-icon-income {
+    background-color: var(--secondary-color-dark);
+}
+
+.category-icon-expense {
+    background-color: var(--primary-color-dark);
+}
+
 progress.custom-progress {
     -webkit-appearance: none;
     appearance: none;
@@ -129,4 +145,13 @@ progress.custom-progress::-webkit-progress-value {
 progress.custom-progress::-moz-progress-bar {
     background-color: var(--secondary-color);
     border-radius: 50px;
+}
+
+.category-row {
+    border-bottom: 1px solid var(--bs-border-color);
+}
+
+/* Архивная категория */
+.category-row-archived {
+    opacity: 0.65;
 }

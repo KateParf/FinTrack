@@ -12,7 +12,7 @@ export function RegisterPage() {
     const [isLoading, setIsLoading] = useState(false);
 
     const currencyOptions = Object.entries(currenciesLabelsLocales).map(
-            ([cur, loc], idx) => { return <option key={idx} value={cur}>{cur}</option>; });
+        ([cur, loc], idx) => { return <option key={idx} value={cur}>{cur}</option>; });
 
     const { signUp } = useAuth();
     const navigate = useNavigate();
@@ -37,60 +37,61 @@ export function RegisterPage() {
     }
 
     return (
-        <main>
-            <form className="auth-card" onSubmit={handleSubmit}>
-                <h1 className="card-title">Регистрация</h1>
-                <div className="card-body">
-                    <div className="card-text">
-                        <label htmlFor="name">Имя </label>
-                        <input id="name" value={name}
-                            onChange={event =>
-                                setName(event.target.value)
-                            }
-                            required />
+        <div className="align-content-center vh-100">
+            <div className="d-flex flex-column align-items-center">
+                <form className="card col-3 py-3" onSubmit={handleSubmit}>
+                    <div className="card-body">
+                        <h3 className="card-title text-center mb-3">Регистрация</h3>
+
+                        <div className="card-text form-floating">
+                            <input id="name" className="form-control" value={name} placeholder="Имя"
+                                onChange={event =>
+                                    setName(event.target.value)
+                                }
+                                required />
+                                <label className="form-label" htmlFor="name">Имя</label>
+                        </div>
+                        
+
+                        <div className="card-text form-floating">
+                            <input id="email" className="form-control" type="email" value={email} placeholder="name@example.com"
+                                onChange={event =>
+                                    setEmail(event.target.value)
+                                }
+                                required />
+                            <label className="form-label" htmlFor="email">Email</label>
+                        </div>
+
+                        <div className="card-text form-floating">
+                            <input className="form-control" id="password" type="password" value={password} placeholder="Password_123"
+                                onChange={event =>
+                                    setPassword(event.target.value)
+                                }
+                                required />
+                            <label className="form-label" htmlFor="password">Пароль</label>
+                        </div>
+
+                        <div className="card-text form-floating">                            
+                            <select id="currency" value={baseCurrency} className="form-select"
+                                onChange={event =>
+                                    setBaseCurrency(event.target.value)
+                                }
+                                required>
+                                {currencyOptions}
+                            </select>
+                            <label htmlFor="baseCurrency" className="form-label">Основная валюта</label>
+                        </div>
+
+                        {error && (<p className="alert alert-danger mt-4">{error}</p>)}
+
+                        <button className="btn card-btn w-100" type="submit" disabled={isLoading}>
+                            {isLoading ? "Регестрируем..." : "Зарегестрироваться"}
+                        </button>
                     </div>
-
-                    <div className="card-text">
-                        <label htmlFor="email">Email </label>
-                        <input id="email" type="email" value={email}
-                            onChange={event =>
-                                setEmail(event.target.value)
-                            }
-                            required />
-                    </div>
-
-                    <div className="card-text">
-                        <label htmlFor="password">Пароль </label>
-                        <input id="password" type="password" value={password}
-                            onChange={event =>
-                                setPassword(event.target.value)
-                            }
-                            required />
-                    </div>
-
-                    <div className="card-text">
-                        <label htmlFor="baseCurrency">Основная валюта </label>
-                        <select id="currency" value={baseCurrency}
-                            onChange={event =>
-                                setBaseCurrency(event.target.value)
-                            }
-                            required>
-                            {currencyOptions}
-                        </select>
-                    </div>
-
-                    {error && (<p>{error}</p>)}
-
-                    <button className="card-btn" type="submit" disabled={isLoading}>
-                        {isLoading ? "Регестрируем..." : "Зарегестрироваться"}
-                    </button>
-                </div>
-            </form>
-
-            <div>
-                Уже есть аккаунт?{" "}
-                <Link to="/login"> Войти </Link>
+                </form>
+                <p className="card-text col-auto m-2">Уже есть аккаунт?</p>
+                <Link className="btn card-btn col-1" to="/login">Войти</Link>
             </div>
-        </main>
+        </div>
     );
 }

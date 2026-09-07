@@ -53,7 +53,7 @@ export function CreateAccountForm({ onCreate }: CreateAccountFormProps) {
     return (
         <article className="card col-12 ms-0 mb-3">
             <form className="card-body" onSubmit={handleSubmit}>
-                <div className="row align-items-end g-3">
+                <div className="row align-items-end">
 
                     <div className="col-lg-6">
                         <label htmlFor="name" className="form-label">Название </label>

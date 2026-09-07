@@ -74,7 +74,7 @@ export function CreateSavingGoalForm({ accounts, onCreate }: CreateSavingGoalFor
     return (
         <article className="card col-12 ms-0 mb-3">
             <form className="card-body" onSubmit={handleSubmit}>
-                <div className="row align-items-end g-3">
+                <div className="row align-items-end">
 
                     <div className="col-lg-4">
                         <label htmlFor="name" className="form-label">Название </label>
@@ -116,7 +116,7 @@ export function CreateSavingGoalForm({ accounts, onCreate }: CreateSavingGoalFor
 
                     <div className="col-lg-3">
                         <label htmlFor="accountIds" className="form-label">Привяжите счета</label>
-                        <Select<AccountOption, true>
+                        <Select<AccountOption, true> placeholder="Ваши накопительные счета"
                             inputId="accountIds" isMulti classNamePrefix="my-select"
                             options={availableAccounts} value={selectedAccounts}
                             onChange={selectedOptions => {

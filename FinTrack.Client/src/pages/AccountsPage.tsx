@@ -60,9 +60,9 @@ export function AccountsPage() {
     }
 
     return (
-        <div className="m-4 border-start ps-4">
+        <div className="m-4">
             <div className="row d-flex justify-content-between">
-                <div className="col-auto h2"> Ваши счета </div>
+                <h2 className="col-auto"> Ваши счета </h2>
                 <button className="col-auto btn"> +&nbsp;Новый счёт</button>
             </div>
 
@@ -98,15 +98,18 @@ export function AccountsPage() {
             </form>
 
             <div className="pt-3">
-                {isLoading && (<p>Загружаем счета...</p>)}
-                {!isLoading && error && (<p>{error}</p>)}
-                {!isLoading && !error && accounts.length === 0 && (<p>У вас пока нет счетов</p>)}
+                {isLoading && (<p className="py-4 text-secondary">Загружаем счета...</p>)}
+                {!isLoading && error && (<p className="alert alert-danger mt-4">{error}</p>)}
+                {!isLoading && !error && accounts.length === 0 && (
+                    <p className="py-5 text-center text-secondary">У вас пока нет счетов</p>
+                )}
 
                 {!isLoading && !error &&
                     accounts.map(account => (
                         <AccountCard key={account.id} account={account}
                             onArchive={handleArchive} onRestore={handleRestore} onUpdate={handleUpdate} />
-                    ))}
+                    ))
+                }
             </div>
 
             <div>

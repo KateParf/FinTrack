@@ -51,7 +51,7 @@ export function LoginPage() {
                             <label className="form-label" htmlFor="password">Пароль</label>
                         </div>
 
-                        {error && (<p className="card-text">{error}</p>)}
+                        {error && (<p className="alert alert-danger mt-4">{error}</p>)}
 
                         <button className="btn card-btn w-100" type="submit" disabled={isLoading}>{isLoading ? "Входим..." : "Войти"}</button>
                     </div>

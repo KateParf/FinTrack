@@ -1,10 +1,10 @@
 import { FormEvent, useState } from "react";
 import { Category, categoryTypeLabels, UpdateCategoryRequest } from "../../types/category";
-import { flattenCategoriesWithDepth, getDescendantIds } from "../../utils/flattenCategories";
+import { CategoryWithDepth, getDescendantIds } from "../../utils/flattenCategories";
 
 interface UpdateCategoryFormProps {
     category: Category;
-    categories: Category[];
+    categories: CategoryWithDepth[];
     onSave: (id: string, request: UpdateCategoryRequest) => Promise<void>;
     onCancel: () => void;
 }
@@ -15,9 +15,8 @@ export function UpdateCategoryForm({ category, categories, onSave, onCancel }: U
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const allCategories = flattenCategoriesWithDepth(categories);
     const descendantIds = getDescendantIds(category);
-    const availableParents = allCategories.filter(candidate =>
+    const availableParents = categories.filter(candidate =>
         candidate.category.id !== category.id &&
         !descendantIds.has(candidate.category.id) &&
         candidate.category.type === category.type &&
@@ -52,24 +51,22 @@ export function UpdateCategoryForm({ category, categories, onSave, onCancel }: U
     }
 
     return (
-        <form className="card" onSubmit={handleSubmit}>
-            <div className="card-body">
-                <div className="card-text">
-                    <label htmlFor="name">Название </label>
-                    <input id="name" value={name}
+        <form className="card-body" onSubmit={handleSubmit}>
+            <div className="row align-items-end">
+                <div className="col-lg-4">
+                    <label htmlFor="name" className="form-label">Название </label>
+                    <input id="name" value={name} className="form-control"
                         onChange={event =>
                             setName(event.target.value)
                         }
                         required />
                 </div>
 
-                <div className="card-text">
-                    Тип: {categoryTypeLabels[category.type]}
-                </div>
-
-                <div className="card-text">
-                    <label htmlFor="parentCategory">Общая категория </label>
-                    <select id="parentCategory" value={parentCategoryId ?? ""}
+                <div className="col-lg-4">
+                    <label htmlFor="parentCategory" className="form-label">
+                        Общая категория | {categoryTypeLabels[category.type]}
+                    </label>
+                    <select id="parentCategory" value={parentCategoryId ?? ""} className="form-select"
                         onChange={event =>
                             handleParentChange(event.target.value)
                         }>
@@ -82,8 +79,16 @@ export function UpdateCategoryForm({ category, categories, onSave, onCancel }: U
                     </select>
                 </div>
 
-                <button className="card-btn" type="submit" disabled={isSubmitting}>{isSubmitting ? "Обновляем..." : "Обновить"}</button>
-                <button className="card-btn" type="button" onClick={() => onCancel()}>Отмена</button>
+                <div className="col-lg-4">
+                    <div className="d-flex gap-2 justify-content-end">
+                        <button className="btn card-btn" type="submit" disabled={isSubmitting}>
+                            {isSubmitting ? "Обновляем..." : "Обновить"}
+                        </button>
+                        <button className="btn" type="button" onClick={onCancel} disabled={isSubmitting}>
+                            Отмена
+                        </button>
+                    </div>
+                </div>
             </div>
         </form>
     );

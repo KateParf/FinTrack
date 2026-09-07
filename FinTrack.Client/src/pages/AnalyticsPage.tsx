@@ -38,8 +38,8 @@ export function AnalyticsPage() {
     return (
         <div className="m-4">
             <div className="row">
-                {isLoading && (<p>Загружаем статистику...</p>)}
-                {!isLoading && error && (<p>{error}</p>)}
+                {isLoading && (<p className="py-4 text-secondary">Загружаем статистику...</p>)}
+                {!isLoading && error && (<p className="alert alert-danger mt-4">{error}</p>)}
 
                 {!isLoading && !error && summary && (
                     summary.map(item => (

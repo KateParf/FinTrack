@@ -37,7 +37,7 @@ export function UpdateAccountForm({ account, onSave, onCancel }: UpdateAccountFo
 
     return (
         <form className="card-body" onSubmit={handleSubmit}>
-            <div className="row align-items-end g-3">
+            <div className="row align-items-end">
 
                 <div className="col-lg-6">
                     <label htmlFor="name" className="form-label">Название </label>
