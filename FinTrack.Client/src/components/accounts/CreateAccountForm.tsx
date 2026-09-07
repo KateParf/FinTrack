@@ -1,6 +1,7 @@
 import { FormEvent, useState } from "react";
 import { createAccount } from "../../api/accountsApi";
-import { Account, AccountType, accountTypeLabels } from "../../types/account";
+import { AccountType, accountTypeLabels } from "../../types/account";
+import { currenciesLabelsLocales } from "../../utils/formatMoney";
 
 interface CreateAccountFormProps {
     onCreate: () => Promise<void>;
@@ -17,8 +18,9 @@ export function CreateAccountForm({ onCreate }: CreateAccountFormProps) {
     const typeOptions = Object.entries(accountTypeLabels).map(([type, label]) => (
         <option key={type} value={type}>{label}</option>
     ));
-    const currs = ["RUB", "USD", "EUR", "BYN", "KZT", "AMD", "KGS", "MDL", "TJS", "CNY"];
-    const currencyOptions = currs.map((cur, idx) => { return <option key={idx} value={cur}>{cur}</option>; });
+    
+    const currencyOptions = Object.entries(currenciesLabelsLocales).map(
+        ([cur, loc], idx) => { return <option key={idx} value={cur}>{cur}</option>; });
 
     async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();

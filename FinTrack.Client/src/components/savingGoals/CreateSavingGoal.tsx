@@ -2,7 +2,7 @@ import { FormEvent, useState } from "react";
 import Select from 'react-select';
 import { Account, AccountOption, AccountType } from "../../types/account";
 import { createSavingGoal } from "../../api/savingGoalsApi";
-import { formatCurrency } from "../../utils/formatMoney";
+import { currenciesLabelsLocales, formatCurrency } from "../../utils/formatMoney";
 
 interface CreateSavingGoalFormProps {
     accounts: Account[];
@@ -28,8 +28,8 @@ export function CreateSavingGoalForm({ accounts, onCreate }: CreateSavingGoalFor
 
     const selectedAccounts = availableAccounts.filter(option => accountIds.includes(option.value));
 
-    const currs = ["RUB", "USD", "EUR", "BYN", "KZT", "AMD", "KGS", "MDL", "TJS", "CNY"];
-    const currencyOptions = currs.map((cur, idx) => { return <option key={idx} value={cur}>{cur}</option>; });
+    const currencyOptions = Object.entries(currenciesLabelsLocales).map(
+        ([cur, loc], idx) => { return <option key={idx} value={cur}>{cur}</option>; });
 
     function handleCurrencyChange(newCurrencyCode: string) {
         setCurrencyCode(newCurrencyCode);
@@ -72,59 +72,63 @@ export function CreateSavingGoalForm({ accounts, onCreate }: CreateSavingGoalFor
     }
 
     return (
-        <form className="card" onSubmit={handleSubmit}>
-            <div className="card-body">
-                <div className="card-text">
-                    <label htmlFor="name">Название </label>
-                    <input id="name" value={name}
-                        onChange={event =>
-                            setName(event.target.value)
-                        }
-                        required />
-                </div>
+        <article className="card col-12 ms-0 mb-3">
+            <form className="card-body" onSubmit={handleSubmit}>
+                <div className="row align-items-end g-3">
 
-                <div className="card-text">
-                    <label htmlFor="targetAmount">Цель </label>
-                    <input id="targetAmount" type="number" min="0" step="0.01" value={targetAmount}
-                        onChange={event =>
-                            setTargetAmount(event.target.value)
-                        }
-                        required />
-                </div>
+                    <div className="col-lg-4">
+                        <label htmlFor="name" className="form-label">Название </label>
+                        <input id="name" value={name} className="form-control"
+                            onChange={event =>
+                                setName(event.target.value)
+                            }
+                            required />
+                    </div>
 
-                <div className="card-text">
-                    <label htmlFor="baseCurrency">Валюта </label>
-                    <select id="currency" value={currencyCode}
-                        onChange={event =>
-                            handleCurrencyChange(event.target.value)
-                        }
-                        required>
-                        {currencyOptions}
-                    </select>
-                </div>
+                    <div className="col-lg-auto">
+                        <label htmlFor="targetAmount" className="form-label">Цель</label>
+                        <input id="targetAmount" className="form-control" type="number" min="0" step="0.01" value={targetAmount}
+                            onChange={event =>
+                                setTargetAmount(event.target.value)
+                            }
+                            required />
+                    </div>
 
-                <div className="card-text">
-                    <label htmlFor="targetDate">Дата достижения </label>
-                    <input id="targetDate" type="date" value={targetDate}
-                        onChange={event =>
-                            setTargetDate(event.target.value)
-                        }
-                    />
-                </div>
+                    <div className="col-lg-1">
+                        <label htmlFor="baseCurrency" className="form-label">Валюта</label>
+                        <select id="currency" value={currencyCode} className="form-select"
+                            onChange={event =>
+                                handleCurrencyChange(event.target.value)
+                            }
+                            required>
+                            {currencyOptions}
+                        </select>
+                    </div>
 
-                <div className="card-text">
-                    <label htmlFor="accountIds">Привяжите счета</label>
-                    <Select<AccountOption, true>
-                        inputId="accountIds" isMulti
-                        options={availableAccounts}
-                        value={selectedAccounts}
-                        onChange={selectedOptions => {
-                            setAccountIds(selectedOptions.map(option => option.value));
-                        }}/>
-                </div>
+                    <div className="col-lg-auto">
+                        <label htmlFor="targetDate" className="form-label">Дата достижения</label>
+                        <input id="targetDate" className="form-control" type="date" value={targetDate ?? ""}
+                            onChange={event =>
+                                setTargetDate(event.target.value)
+                            }
+                        />
+                    </div>
 
-                <button className="card-btn" type="submit" disabled={isSubmitting}>{isSubmitting ? "Создаём..." : "Создать"}</button>
-            </div>
-        </form>
+                    <div className="col-lg-3">
+                        <label htmlFor="accountIds" className="form-label">Привяжите счета</label>
+                        <Select<AccountOption, true>
+                            inputId="accountIds" isMulti classNamePrefix="my-select"
+                            options={availableAccounts} value={selectedAccounts}
+                            onChange={selectedOptions => {
+                                setAccountIds(selectedOptions.map(option => option.value));
+                            }} />
+                    </div>
+
+                    <div className="col-lg-1 d-flex justify-content-end">
+                        <button className="btn" type="submit" disabled={isSubmitting}>{isSubmitting ? "Создаём..." : "Создать"}</button>
+                    </div>
+                </div>
+            </form>
+        </article>
     );
 }

@@ -53,26 +53,26 @@ export function AccountCard({ account, onArchive, onRestore, onUpdate }: Account
                             </div>
 
                             <div>
-                                <div className="card-title h4 mb-1">{accountTypeLabels[account.type]}: {account.name}</div>
+                                <h4 className="card-title mb-1">{accountTypeLabels[account.type]}: {account.name}</h4>
                                 <div className="card-text small">{account.currencyCode}</div>
                             </div>
                         </div>
                     </div>
 
                     <div className="col-lg-1 d-flex">
-                        <div className="d-flex flex-column gap-1">
-                            <div className="h5 card-text mb-0">Баланс</div>
-                            <div className="h5 fw-bold">
+                        <div className="d-flex flex-column gap-1 pt-2">
+                            <h5 className="card-text mb-0">Баланс</h5>
+                            <h5 className="fw-bold">
                                 {formatCurrency(account.balance, account.currencyCode)}
-                            </div>
+                            </h5>
                         </div>
                     </div>
                     <div className="col-lg-1 d-flex">
-                        <div className="d-flex flex-column gap-1">
-                            <div className="h5 card-text mb-0">Статус</div>
-                            <div className={`${account.isArchived ? 'text-secondary' : 'text-success'}`}>
+                        <div className="d-flex flex-column gap-1 pt-2">
+                            <h5 className="card-text mb-0">Статус</h5>
+                            <h5 className={`${account.isArchived ? 'text-secondary' : 'text-success'} fw-bold`}>
                                 {account.isArchived ? 'Архивный' : 'Активный'}
-                            </div>
+                            </h5>
                         </div>
                     </div>
 

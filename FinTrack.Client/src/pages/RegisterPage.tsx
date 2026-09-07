@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { FormEvent, useState } from "react";
 import { useAuth } from "../auth/AuthContext";
+import { currenciesLabelsLocales } from "../utils/formatMoney";
 
 export function RegisterPage() {
     const [name, setName] = useState("");
@@ -10,8 +11,8 @@ export function RegisterPage() {
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
 
-    const currs = ["RUB", "USD", "EUR", "BYN", "KZT", "AMD", "KGS", "MDL", "TJS", "CNY"];
-    const options = currs.map((cur, idx) => { return <option key={idx} value={cur}>{cur}</option>; });
+    const currencyOptions = Object.entries(currenciesLabelsLocales).map(
+            ([cur, loc], idx) => { return <option key={idx} value={cur}>{cur}</option>; });
 
     const { signUp } = useAuth();
     const navigate = useNavigate();
@@ -74,7 +75,7 @@ export function RegisterPage() {
                                 setBaseCurrency(event.target.value)
                             }
                             required>
-                            {options}
+                            {currencyOptions}
                         </select>
                     </div>
 

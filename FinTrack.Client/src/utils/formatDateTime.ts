@@ -5,6 +5,12 @@ export function formatDateTime(date: string): string {
     }).format(new Date(date));
 }
 
+export function formatDate(date: string): string {
+    return new Intl.DateTimeFormat("ru-RU", {
+        dateStyle: "long"
+    }).format(new Date(date));
+}
+
 export function toDateTimeLocal(value: string): string {
     const date = new Date(value);
     const timezoneOffset = date.getTimezoneOffset() * 60_000;

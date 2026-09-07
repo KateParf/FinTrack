@@ -4,7 +4,7 @@
     --primary-color-dark: #DA6A00;
     --secondary-color: #68904D;
     /* Дополнительный цвет */
-    --secondary-color-dark: #14471E;
+    --secondary-color-dark: #3a5a01;
     /* Дополнительный цвет */
     --background-color: #C8D2D150;
     /* Цвет фона */
@@ -28,8 +28,9 @@ body {
     padding: 16px;
 }
 
-.card-title {
-    color: var(--secondary-color-dark);
+.card-title,
+.text-success {
+    color: var(--secondary-color-dark) !important;
 }
 
 .card-text {
@@ -65,14 +66,20 @@ body {
     border: 0;
 }
 
+.my-select__control {
+    border: var(--bs-border-width) solid var(--bs-border-color) !important;
+    border-radius: var(--bs-border-radius) !important;
+}
+
 .form-control:focus,
 .form-control:focus-visible,
 .form-select:focus,
 .form-select:focus-visible,
 .form-check-input:focus,
-.form-check-input:focus-visible {
-    border: none;
-    box-shadow: 0 0 0 .25rem #EE9B0140;
+.form-check-input:focus-visible,
+.my-select__control--is-focused {
+    border: none !important;
+    box-shadow: 0 0 0 .25rem #EE9B0140 !important;
 }
 
 .form-control:autofill,
@@ -88,4 +95,38 @@ body {
     align-items: center;
     justify-content: center;
     background-color: var(--secondary-color-dark);
+}
+
+.goal-icon {
+    width: 96px;
+    height: 96px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--primary-color-dark);
+}
+
+progress.custom-progress {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 15px;
+}
+
+progress.custom-progress::-webkit-progress-bar {
+    background-color: #ffffff;
+    border-radius: 50px;
+}
+
+/* Progress value fill (Chrome, Safari, Opera, Edge) */
+progress.custom-progress::-webkit-progress-value {
+    background-color: var(--secondary-color);
+    border-radius: 50px;
+    transition: width 0.3s ease;
+}
+
+/* Progress value fill (Firefox) */
+progress.custom-progress::-moz-progress-bar {
+    background-color: var(--secondary-color);
+    border-radius: 50px;
 }

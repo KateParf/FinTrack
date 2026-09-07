@@ -1,5 +1,5 @@
 import { getAccounts } from "../api/accountsApi";
-import { useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { Account } from "../types/account";
 import { SavingGoal, SavingGoalRequest } from "../types/savingGoal";
 import { archiveSavingGoal, getSavingGoals, restoreSavingGoal, updateSavingGoal } from "../api/savingGoalsApi";
@@ -32,6 +32,11 @@ export function SavingGoalsPage() {
     }
     useEffect(() => { void loadGoals(); }, []);
 
+    async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+        event.preventDefault();
+        await loadGoals();
+    }
+
     async function handleArchive(id: string) {
         try {
             await archiveSavingGoal(id);
@@ -56,29 +61,38 @@ export function SavingGoalsPage() {
     }
 
     return (
-        <div>
-            <h1>Ваши цели для накоплений</h1>
+        <div className="m-4 border-start ps-4">
+            <div className="row d-flex justify-content-between">
+                <div className="col-auto h2"> Ваши цели для накоплений </div>
+                <button className="col-auto btn"> +&nbsp;Новая цель</button>
+            </div>
 
-            <label htmlFor="archived">
-                <input id="archived" type="checkbox"
-                    checked={includeArchived} disabled={isLoading}
-                    onChange={event => {
-                        const checked = event.target.checked;
-                        event.preventDefault();
-                        setIncludeArchived(checked);
-                        loadGoals();
-                    }}
-                />
-                Показывать заархивированные
-            </label>
-            <div>
+            <form className="row d-flex justify-content-start align-items-end pb-3 border-bottom ps-2"
+                onSubmit={handleSubmit}>
+                <div className="col-auto form-check form-switch mb-2">
+                    <label className="form-check-label" htmlFor="archived">
+                        <input className="form-check-input me-2" id="archived" type="checkbox" role="switch"
+                            checked={includeArchived} disabled={isLoading}
+                            onChange={event => {
+                                setIncludeArchived(event.target.checked);
+                            }}
+                        />
+                        Показывать заархивированные
+                    </label>
+                </div>
+                <button className="col-auto btn card-btn" type="submit" disabled={isLoading}>
+                    {isLoading ? "Загружаем..." : "Применить"}
+                </button>
+            </form>
+
+            <div className="pt-3">
                 {isLoading && (<p>Загружаем цели...</p>)}
                 {!isLoading && error && (<p>{error}</p>)}
                 {!isLoading && !error && savingGoals.length === 0 && (<p>У вас пока нет целей</p>)}
 
                 {!isLoading && !error &&
                     savingGoals.map(goal => (
-                        <SavingGoalCard key={goal.id} goal={goal} accounts={accounts} 
+                        <SavingGoalCard key={goal.id} goal={goal} accounts={accounts}
                             onArchive={handleArchive} onRestore={handleRestore} onUpdate={handleUpdate} />
                     ))}
             </div>
