@@ -90,6 +90,7 @@ export function UpdateCategoryForm({ category, categories, onSave, onCancel }: U
                     </div>
                 </div>
             </div>
+            {error && <p className="alert alert-danger mt-4">{error}</p>}
         </form>
     );
 }

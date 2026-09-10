@@ -83,53 +83,60 @@ export function UpdateTransferForm({ transfer, accounts, onUpdate, onCancel }: U
     }
 
     return (
-        <form className="card" onSubmit={handleSubmit}>
-            <div className="card-body">
-                <div className="card-body">
-                    <div className="card-text">
-                        <label htmlFor="transfer-from-account">Со счёта </label>
-                        <select id="transfer-from-account" value={fromAccountId}
-                            onChange={event => handleFromAccountChange(event.target.value)} required>
-                            {availableAccountsFrom.map(acc => (
-                                <option key={acc.id} value={acc.id}>{acc.name}</option>
-                            ))}
-                        </select>
-                    </div>
-                    <div className="card-text">
-                        <label htmlFor="transfer-to-account">На счёт </label>
-                        <select id="transfer-to-account" value={toAccountId}
-                            onChange={event => handleToAccountChange(event.target.value)} required>
-                            {availableAccountsTo.map(acc => (
-                                <option key={acc.id} value={acc.id}>{acc.name}</option>
-                            ))}
-                        </select>
-                    </div>
+        <form className="card-body" onSubmit={handleSubmit}>
+            <div className="row align-items-end">
 
-                    <div className="card-text">
-                        <label htmlFor="transfer-amount">Сумма </label>
-                        <input id="transfer-amount" type="number" min="0.01" step="0.01"
-                            value={amount} onChange={event => setAmount(event.target.value)}
-                            required /> {transfer.currencyCode}
+                <div className="col">
+                    <label htmlFor="transfer-from-account" className="form-label">Со счёта </label>
+                    <select id="transfer-from-account" value={fromAccountId} className="form-select"
+                        onChange={event => handleFromAccountChange(event.target.value)} required>
+                        {availableAccountsFrom.map(acc => (
+                            <option key={acc.id} value={acc.id}>{acc.name}</option>
+                        ))}
+                    </select>
+                </div>
+                <div className="col">
+                    <label htmlFor="transfer-to-account" className="form-label">На счёт </label>
+                    <select id="transfer-to-account" value={toAccountId} className="form-select"
+                        onChange={event => handleToAccountChange(event.target.value)} required>
+                        {availableAccountsTo.map(acc => (
+                            <option key={acc.id} value={acc.id}>{acc.name}</option>
+                        ))}
+                    </select>
+                </div>
+
+                <div className="col-lg-1">
+                    <label htmlFor="transfer-amount" className="form-label">Сумма ({transfer.currencyCode})</label>
+                    <input id="transfer-amount" type="number" min="0.01" step="0.01" className="form-control"
+                        value={amount} onChange={event => setAmount(event.target.value)}
+                        required />
+                </div>
+
+                <div className="col-lg-auto">
+                    <label htmlFor="transfer-date" className="form-label">Дата </label>
+                    <input id="transfer-date" type="datetime-local" className="form-control"
+                        value={occurredAt} onChange={event => setOccurredAt(event.target.value)}
+                        required />
+                </div>
+
+                <div className="col-lg-4">
+                    <label htmlFor="transfer-note" className="form-label">Комментарий </label>
+                    <input id="transfer-note" className="form-control" value={note}
+                        onChange={event => setNote(event.target.value)} />
+                </div>
+
+                <div className="col">
+                    <div className="d-flex gap-2 justify-content-end">
+                        <button className="btn card-btn" type="submit" disabled={isSubmitting}>
+                            {isSubmitting ? "Обновляем..." : "Обновить"}
+                        </button>
+                        <button className="btn" type="button" onClick={onCancel} disabled={isSubmitting}>
+                            Отмена
+                        </button>
                     </div>
-
-                    <div className="card-text">
-                        <label htmlFor="transfer-date">Дата </label>
-                        <input id="transfer-date" type="datetime-local"
-                            value={occurredAt} onChange={event => setOccurredAt(event.target.value)}
-                            required />
-                    </div>
-
-                    <div className="card-text">
-                        <label htmlFor="transfer-note">Комментарий </label>
-                        <input id="transfer-note" value={note} onChange={event => setNote(event.target.value)} />
-                    </div>
-
-                    {error && <p>{error}</p>}
-
-                    <button className="card-btn" type="submit" disabled={isSubmitting}>{isSubmitting ? "Обновляем..." : "Обновить"}</button>
-                    <button className="card-btn" type="button" onClick={() => onCancel()}>Отмена</button>
                 </div>
             </div>
+            {error && <p className="alert alert-danger mt-4">{error}</p>}
         </form>
     );
 }

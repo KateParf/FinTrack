@@ -121,7 +121,7 @@ export function UpdateSavingGoalForm({ goal, accounts, onSave, onCancel }: Updat
                         }} />
                 </div>
 
-                <div className="col-lg-2">
+                <div className="col">
                     <div className="d-flex gap-2 justify-content-end">
                         <button className="btn card-btn" type="submit" disabled={isSubmitting}>
                             {isSubmitting ? "Обновляем..." : "Обновить"}
@@ -132,6 +132,7 @@ export function UpdateSavingGoalForm({ goal, accounts, onSave, onCancel }: Updat
                     </div>
                 </div>
             </div>
+            {error && <p className="alert alert-danger mt-4">{error}</p>}
         </form>
     );
 }

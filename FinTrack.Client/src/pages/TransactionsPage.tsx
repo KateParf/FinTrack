@@ -106,16 +106,26 @@ export function TransactionsPage() {
         }
     }
 
-    if (!accountId) { return <p>Не указан счёт</p>; }
+    if (!accountId) { return <p className="alert alert-danger mt-4">Не указан счёт</p>; }
     return (
-        <div className="container">
-            <h1>Операции на счёте {account?.name}</h1>
-            {account && (<h2>Баланс: {formatCurrency(account.balance, account.currencyCode)}</h2>)}
+        <div className="m-4">
+            <div className="row d-flex justify-content-between">
+                <div className="col-auto">
+                    <h2> Операции на счёте {account?.name} </h2>
+                    {account && (<h4 className="text-success">Баланс: {formatCurrency(account.balance, account.currencyCode)}</h4>)}
+                </div>
+                <div className="col-auto">
+                    <button className="btn me-3"> +&nbsp;Новая операция</button>
+                    <button className="btn"> +&nbsp;Новый перевод</button>
+                </div>
+            </div>
 
-            <form onSubmit={loadTransactions}>
-                <div>
-                    <label htmlFor="type">Тип </label>
-                    <select id="type" value={type ?? ""}
+            <form className="row d-flex justify-content-start align-items-end pb-3 border-bottom"
+                onSubmit={loadTransactions}>
+
+                <div className="col-auto">
+                    <label className="form-label m-0" htmlFor="type">Тип</label>
+                    <select className="form-select" id="type" value={type ?? ""}
                         onChange={event => {
                             const value = event.target.value;
                             setType(value === "" ? null : Number(value) as TransactionType);
@@ -127,9 +137,9 @@ export function TransactionsPage() {
                     </select>
                 </div>
 
-                <div>
-                    <label htmlFor="category">Категория </label>
-                    <select id="category" value={categoryId ?? ""} disabled={isTransfer}
+                <div className="col-auto">
+                    <label className="form-label m-0" htmlFor="category">Категория </label>
+                    <select className="form-select" id="category" value={categoryId ?? ""} disabled={isTransfer}
                         onChange={event => {
                             const value = event.target.value;
                             setCategoryId(value)
@@ -144,17 +154,18 @@ export function TransactionsPage() {
                     </select>
                 </div>
 
-                <div>
-                    <label htmlFor="date-picker-from">C:</label>
-                    <input id="date-picker-from" type="date"
+                <div className="col-auto">
+                    <label className="form-label m-0" htmlFor="date-picker-from">C:</label>
+                    <input className="form-control" id="date-picker-from" type="date"
                         value={from}
                         onChange={event => {
                             setFrom(event.target.value)
                         }}
                     />
-
-                    <label htmlFor="date-picker-to">По:</label>
-                    <input id="date-picker-to" type="date"
+                </div>
+                <div className="col-auto">
+                    <label className="form-label m-0" htmlFor="date-picker-to">По:</label>
+                    <input className="form-control" id="date-picker-to" type="date"
                         value={to}
                         onChange={event => {
                             setTo(event.target.value)
@@ -162,37 +173,39 @@ export function TransactionsPage() {
                     />
                 </div>
 
-                <button className="card-btn" type="submit" disabled={isLoading}>
+                <button className="col-auto btn card-btn" type="submit" disabled={isLoading}>
                     {isLoading ? "Загружаем..." : "Применить"}
                 </button>
             </form>
 
-            <div>
-                {isLoading && (<p>Загружаем операции...</p>)}
-                {!isLoading && error && (<p>{error}</p>)}
-                {!isLoading && !error && transactions.length === 0 && (<p>На этом счету пока нет операций</p>)}
+            <div className="pt-3">
+                {isLoading && (<p className="py-4 text-secondary">Загружаем операции...</p>)}
+                {!isLoading && error && (<p className="alert alert-danger mt-4">{error}</p>)}
+                {!isLoading && !error && transactions.length === 0 && (
+                    <p className="py-5 text-center text-secondary">На этом счету пока нет операций</p>
+                )}
 
                 {!isLoading && !error &&
                     transactions.map(transaction => (
-                        <TransactionCard key={transaction.id} 
-                        transaction={transaction} accounts = {accounts} currencyCode={account!.currencyCode} categories={categories} 
-                        onUpdate={loadPageData} onDeleteTransaction={handleDeleteTransaction} onDeleteTransfer={handleDeleteTransfer}/>
+                        <TransactionCard key={transaction.id}
+                            transaction={transaction} accounts={accounts} currencyCode={account!.currencyCode} categories={categories}
+                            onUpdate={loadPageData} onDeleteTransaction={handleDeleteTransaction} onDeleteTransfer={handleDeleteTransfer} />
                     ))}
-
-                {!isLoading && !error && account &&
-                    (<div>
-                        <h2>Добавить новую операцию</h2>
-                        <CreateTransactionForm account={account} categories={categories} onCreate={loadPageData} />
-                    </div>)}
-                {!isLoading && !error && account &&
-                    (<div>
-                        <h2>Добавить новый перевод между счетами</h2>
-                        <CreateTransferForm account={account} accounts={accounts} onCreate={loadPageData} />
-                    </div>)
-                }
             </div>
 
-            <div><Link className="card-btn" to="/accounts"> ← К счетам </Link></div>
+            {!isLoading && !error && account &&
+                (<div>
+                    <h2>Добавить новую операцию</h2>
+                    <CreateTransactionForm account={account} categories={categories} onCreate={loadPageData} />
+                </div>)}
+            {!isLoading && !error && account &&
+                (<div>
+                    <h2>Добавить новый перевод между счетами</h2>
+                    <CreateTransferForm account={account} accounts={accounts} onCreate={loadPageData} />
+                </div>)
+            }
+
+            <div><Link className="btn" to="/accounts"> ← К счетам </Link></div>
         </div >
     );
 }

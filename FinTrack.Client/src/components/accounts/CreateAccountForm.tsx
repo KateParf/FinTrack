@@ -99,6 +99,7 @@ export function CreateAccountForm({ onCreate }: CreateAccountFormProps) {
                         <button className="btn" type="submit" disabled={isSubmitting}>{isSubmitting ? "Создаём..." : "Создать"}</button>
                     </div>
                 </div>
+                {error && <p className="alert alert-danger mt-4">{error}</p>}
             </form>
         </article>
     );

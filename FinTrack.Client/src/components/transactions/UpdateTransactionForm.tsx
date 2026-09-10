@@ -56,11 +56,11 @@ export function UpdateTransactionForm({ transaction, categories, onUpdate, onCan
     }
 
     return (
-        <form className="card" onSubmit={handleSubmit}>
-            <div className="card-body">
-                <div className="card-text">
-                    <label htmlFor="update-transaction-type">Тип </label>
-                    <select id="update-transaction-type" value={type}
+        <form className="card-body" onSubmit={handleSubmit}>
+            <div className="row align-items-end">
+                <div className="col-lg-1">
+                    <label htmlFor="transaction-type" className="form-label">Тип </label>
+                    <select id="transaction-type" value={type} className="form-select"
                         onChange={event => {
                             setType(Number(event.target.value) as TransactionType);
                             setCategoryId("");
@@ -70,9 +70,9 @@ export function UpdateTransactionForm({ transaction, categories, onUpdate, onCan
                     </select>
                 </div>
 
-                <div className="card-text">
-                    <label htmlFor="update-transaction-category">Категория </label>
-                    <select id="update-transaction-category" value={categoryId}
+                <div className="col-lg-2">
+                    <label htmlFor="transaction-category" className="form-label">Категория</label>
+                    <select id="transaction-category" value={categoryId} className="form-select"
                         onChange={event => setCategoryId(event.target.value)}>
                         <option value="">Без категории</option>
                         {availableCategories.map(({ category, depth }) => (
@@ -83,34 +83,41 @@ export function UpdateTransactionForm({ transaction, categories, onUpdate, onCan
                     </select>
                 </div>
 
-                <div className="card-text">
-                    <label htmlFor="update-transaction-amount">Сумма </label>
-                    <input id="update-transaction-amount" type="number"
+                <div className="col-lg-1">
+                    <label htmlFor="transaction-amount" className="form-label">Сумма</label>
+                    <input id="transaction-amount" type="number" className="form-control"
                         min="0.01" step="0.01" value={amount}
                         onChange={event => setAmount(event.target.value)}
                         required />
                 </div>
 
-                <div className="card-text">
-                    <label htmlFor="update-transaction-date">Дата </label>
-                    <input id="update-transaction-date"
+                <div className="col-lg-auto">
+                    <label htmlFor="transaction-date" className="form-label">Дата</label>
+                    <input id="transaction-date" className="form-control"
                         type="datetime-local" value={occurredAt}
                         onChange={event => setOccurredAt(event.target.value)}
                         required />
                 </div>
 
-                <div className="card-text">
-                    <label htmlFor="update-transaction-note">Комментарий </label>
-                    <input id="update-transaction-note" value={note}
+                <div className="col-lg-4">
+                    <label htmlFor="transaction-note" className="form-label">Комментарий</label>
+                    <input id="transaction-note" value={note} className="form-control"
                         onChange={event => setNote(event.target.value)}
                     />
                 </div>
 
-                {error && <p>{error}</p>}
-
-                <button className="card-btn" type="submit" disabled={isSubmitting}>{isSubmitting ? "Обновляем..." : "Обновить"}</button>
-                <button className="card-btn" type="button" onClick={() => onCancel()}>Отмена</button>
+                <div className="col">
+                    <div className="d-flex gap-2 justify-content-end">
+                        <button className="btn card-btn" type="submit" disabled={isSubmitting}>
+                            {isSubmitting ? "Обновляем..." : "Обновить"}
+                        </button>
+                        <button className="btn" type="button" onClick={onCancel} disabled={isSubmitting}>
+                            Отмена
+                        </button>
+                    </div>
+                </div>
             </div>
+            {error && <p className="alert alert-danger mt-4">{error}</p>}
         </form>
     );
 }

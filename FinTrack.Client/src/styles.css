@@ -1,20 +1,34 @@
 :root {
-    --primary-color: #EE9B01;
     /* Основной цвет */
-    --primary-color-dark: #DA6A00;
-    --secondary-color: #68904D;
+    --primary-color: rgb(238, 155, 1);
+    --primary-color-dark: rgb(218, 106, 0);
     /* Дополнительный цвет */
-    --secondary-color-dark: #3a5a01;
-    /* Дополнительный цвет */
-    --background-color: #C8D2D150;
+    --secondary-color: rgb(104, 144, 77);
+    --secondary-color-dark: rgb(58, 90, 1);
+    /* Цвет ошибки */
+    --danger-color: rgb(211, 47, 47);
+    --danger-color-dark: rgb(166, 25, 25);
     /* Цвет фона */
-    --text-color: #333333;
+    --background-color: rgba(200, 210, 209, 0.3);
     /* Цвет текста */
+    --text-color: rgb(51, 51, 51);
 }
 
 body {
     color: var(--text-color);
     font-family: Arial, sans-serif;
+}
+
+.alert-success {
+    --bs-alert-color: var(--secondary-color-dark);
+    --bs-alert-bg: color-mix(in srgb, var(--secondary-color) 20%, transparent);
+    --bs-alert-border-color: var(--secondary-color-dark);
+}
+
+.alert-danger {
+    --bs-alert-color: var(--danger-color-dark);
+    --bs-alert-bg: color-mix(in srgb, var(--danger-color) 20%, transparent);
+    --bs-alert-border-color: var(--danger-color-dark);
 }
 
 .card {
@@ -79,7 +93,8 @@ body {
 .form-check-input:focus-visible,
 .my-select__control--is-focused {
     border: none !important;
-    box-shadow: 0 0 0 .25rem #EE9B0140 !important;
+    
+    box-shadow: 0 0 0 .25rem color-mix(in srgb, var(--primary-color) 25%, transparent) !important;
 }
 
 .form-control:autofill,
@@ -106,6 +121,15 @@ body {
     background-color: var(--primary-color-dark);
 }
 
+.transaction-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--secondary-color-dark);
+}
+
 .category-icon {
     width: 48px;
     height: 48px;
@@ -117,7 +141,6 @@ body {
 .category-icon-income {
     background-color: var(--secondary-color-dark);
 }
-
 .category-icon-expense {
     background-color: var(--primary-color-dark);
 }
@@ -154,4 +177,9 @@ progress.custom-progress::-moz-progress-bar {
 /* Архивная категория */
 .category-row-archived {
     opacity: 0.65;
+}
+
+.expenses-pie {
+    width: 100%;
+    height: 30vh;
 }

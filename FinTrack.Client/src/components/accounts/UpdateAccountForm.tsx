@@ -70,6 +70,7 @@ export function UpdateAccountForm({ account, onSave, onCancel }: UpdateAccountFo
                     </div>
                 </div>
             </div>
+            {error && <p className="alert alert-danger mt-4">{error}</p>}
         </form>
     );
 }
