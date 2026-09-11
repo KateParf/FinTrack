@@ -48,7 +48,7 @@ export function UpdateAccountForm({ account, onSave, onCancel }: UpdateAccountFo
                         required />
                 </div>
 
-                <div className="col-lg-2">
+                <div className="col">
                     <label htmlFor="type" className="form-label">Тип</label>
                     <select id="type" value={type} className="form-select"
                         onChange={event => {
@@ -59,7 +59,7 @@ export function UpdateAccountForm({ account, onSave, onCancel }: UpdateAccountFo
                     </select>
                 </div>
 
-                <div className="col-lg-4">
+                <div className="col-lg-auto">
                     <div className="d-flex gap-2 justify-content-end">
                         <button className="btn card-btn" type="submit" disabled={isSubmitting}>
                             {isSubmitting ? "Обновляем..." : "Обновить"}

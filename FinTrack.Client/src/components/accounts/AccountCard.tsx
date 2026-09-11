@@ -85,7 +85,7 @@ export function AccountCard({ account, onArchive, onRestore, onUpdate }: Account
                                 :
                                 <button className="btn card-btn" onClick={() => onArchive(account.id)}>Архивировать</button>
                             }
-                            <Link className="btn" to={`/accounts/${account.id}/transactions`}>Посмотреть операции</Link>
+                            <Link className="btn" to={`/accounts/${account.id}/transactions`}>Операции</Link>
                         </div>
                     </div>
                 </div>

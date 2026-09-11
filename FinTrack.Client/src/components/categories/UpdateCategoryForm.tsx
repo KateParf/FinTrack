@@ -51,7 +51,7 @@ export function UpdateCategoryForm({ category, categories, onSave, onCancel }: U
     }
 
     return (
-        <form className="card-body" onSubmit={handleSubmit}>
+        <form className="card-body px-0" onSubmit={handleSubmit}>
             <div className="row align-items-end">
                 <div className="col-lg-4">
                     <label htmlFor="name" className="form-label">Название </label>

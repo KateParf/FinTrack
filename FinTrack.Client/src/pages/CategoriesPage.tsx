@@ -11,6 +11,7 @@ export function CategoriesPage() {
     const [type, setType] = useState<CategoryType | null>(null);
     const [includeArchived, setIncludeArchived] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+    const [isCreating, setIsCreating] = useState(false);
 
     const typeOptions = Object.entries(categoryTypeLabels).map(([type, label]) => (
         <option key={type} value={type}>{label}</option>
@@ -76,13 +77,20 @@ export function CategoriesPage() {
         <div className="m-4">
             <div className="row d-flex justify-content-between">
                 <h2 className="col-auto"> Ваши категории </h2>
-                <button className="col-auto btn"> +&nbsp;Новая категория</button>
+                {!isCreating && <button className="col-auto btn"
+                    onClick={event =>
+                        setIsCreating(true)
+                    }> +&nbsp;Новая категория</button>}
+                {isCreating && <button className="col-auto btn card-btn"
+                    onClick={event =>
+                        setIsCreating(false)
+                    }> Назад к категориям</button>}
             </div>
 
             <form className="row d-flex justify-content-start align-items-end pb-3 border-bottom"
                 onSubmit={handleSubmit}>
                 <div className="col-auto">
-                    <label htmlFor="type" className="form-label m-0">Тип </label>
+                    <label htmlFor="type" className="form-label m-0">Тип</label>
                     <select id="type" className="form-select" value={type ?? ""}
                         onChange={event => {
                             const value = event.target.value;
@@ -105,12 +113,12 @@ export function CategoriesPage() {
                     </label>
                 </div>
 
-                <button className="col-auto btn card-btn" type="submit" disabled={isLoading}>
+                <button className="col-auto btn card-btn" type="submit" disabled={isLoading || isCreating}>
                     {isLoading ? "Загружаем..." : "Применить"}
                 </button>
             </form>
 
-            <div>
+            {!isCreating && <div>
                 {isLoading && (<p className="py-4 text-secondary">Загружаем категории...</p>)}
                 {!isLoading && error && (<p className="alert alert-danger mt-4">{error}</p>)}
                 {!isLoading && !error && categories.length === 0 && (
@@ -124,7 +132,11 @@ export function CategoriesPage() {
                                 <div className="d-flex align-items-center pb-2 mb-1 border-bottom">
                                     <h3 className="mb-0">Доходы</h3>
                                 </div>
-                                <div>
+                                <div style={{
+                                    height: '65vh',
+                                    overflowY: 'auto',
+                                    overflowX: 'hidden'
+                                }}>
                                     {incomeCategories.length === 0 ? (
                                         <div className="py-4 text-secondary">Нет категорий доходов</div>
                                     ) : (
@@ -145,7 +157,11 @@ export function CategoriesPage() {
                                     <h3 className="mb-0">Расходы</h3>
                                 </div>
 
-                                <div>
+                                <div style={{
+                                    height: '65vh',
+                                    overflowY: 'auto',
+                                    overflowX: 'hidden'
+                                }}>
                                     {expenseCategories.length === 0 ? (
                                         <div className="py-4 text-secondary">Нет категорий расходов</div>
                                     ) : (
@@ -161,12 +177,12 @@ export function CategoriesPage() {
                         )}
                     </div>
                 )}
-            </div>
+            </div>}
 
-            <div>
+            {isCreating && <div className="pt-3">
                 <h2>Добавить новую категорию</h2>
                 <CreateCategoryForm categories={categories} onCreate={handleCategoryCreated} />
-            </div>
+            </div>}
         </div>
     );
 }

@@ -14,7 +14,7 @@ export function BalanceHistoryLineChart({ balanceHistory }: BalanceHistoryLineCh
     }
     return (
         <Typed.LineChart
-            style={{ width: '100%', maxWidth: '40vw', height: '100%', maxHeight: '40vh', aspectRatio: 1.618 }}
+            style={{ width: '100%', maxWidth: '40vw', height: '100%', maxHeight: '50vh', aspectRatio: 1.618 }}
             responsive
             data={balanceHistory}
             margin={{ top: 5, right: 0, left: 0, bottom: 5, }}

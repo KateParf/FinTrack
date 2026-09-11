@@ -10,6 +10,7 @@ export function AccountsPage() {
     const [type, setType] = useState<number | null>(null);
     const [includeArchived, setIncludeArchived] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+    const [isCreating, setIsCreating] = useState(false);
 
     const typeOptions = Object.entries(accountTypeLabels).map(([type, label]) => (
         <option key={type} value={type}>{label}</option>
@@ -63,7 +64,14 @@ export function AccountsPage() {
         <div className="m-4">
             <div className="row d-flex justify-content-between">
                 <h2 className="col-auto"> Ваши счета </h2>
-                <button className="col-auto btn"> +&nbsp;Новый счёт</button>
+                {!isCreating && <button className="col-auto btn"
+                    onClick={event =>
+                        setIsCreating(true)
+                    }> +&nbsp;Новый счёт</button>}
+                {isCreating && <button className="col-auto btn card-btn"
+                    onClick={event =>
+                        setIsCreating(false)
+                    }> Назад к счетам</button>}
             </div>
 
             <form className="row d-flex justify-content-start align-items-end pb-3 border-bottom"
@@ -92,12 +100,16 @@ export function AccountsPage() {
                     </label>
                 </div>
 
-                <button className="col-auto btn card-btn" type="submit" disabled={isLoading}>
+                <button className="col-auto btn card-btn" type="submit" disabled={isLoading || isCreating}>
                     {isLoading ? "Загружаем..." : "Применить"}
                 </button>
             </form>
 
-            <div className="pt-3">
+            {!isCreating && <div className="pt-3" style={{
+                height: '75vh',
+                overflowY: 'auto',
+                overflowX: 'hidden'
+            }}>
                 {isLoading && (<p className="py-4 text-secondary">Загружаем счета...</p>)}
                 {!isLoading && error && (<p className="alert alert-danger mt-4">{error}</p>)}
                 {!isLoading && !error && accounts.length === 0 && (
@@ -110,12 +122,12 @@ export function AccountsPage() {
                             onArchive={handleArchive} onRestore={handleRestore} onUpdate={handleUpdate} />
                     ))
                 }
-            </div>
+            </div>}
 
-            <div>
+            {isCreating && <div className="pt-3">
                 <h2>Добавить новый счёт</h2>
                 <CreateAccountForm onCreate={loadAccounts} />
-            </div>
+            </div>}
         </div>
     );
 }

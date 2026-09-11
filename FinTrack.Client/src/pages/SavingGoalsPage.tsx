@@ -12,6 +12,7 @@ export function SavingGoalsPage() {
     const [error, setError] = useState<string | null>(null);
     const [includeArchived, setIncludeArchived] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+    const [isCreating, setIsCreating] = useState(false);
 
     async function loadGoals() {
         setError(null);
@@ -64,7 +65,14 @@ export function SavingGoalsPage() {
         <div className="m-4">
             <div className="row d-flex justify-content-between">
                 <h2 className="col-auto"> Ваши цели для накоплений </h2>
-                <button className="col-auto btn"> +&nbsp;Новая цель</button>
+                {!isCreating && <button className="col-auto btn"
+                    onClick={event =>
+                        setIsCreating(true)
+                    }> +&nbsp;Новая цель</button>}
+                {isCreating && <button className="col-auto btn card-btn"
+                    onClick={event =>
+                        setIsCreating(false)
+                    }> Назад к целям</button>}
             </div>
 
             <form className="row d-flex justify-content-start align-items-end pb-3 border-bottom ps-2"
@@ -80,12 +88,16 @@ export function SavingGoalsPage() {
                         Показывать заархивированные
                     </label>
                 </div>
-                <button className="col-auto btn card-btn" type="submit" disabled={isLoading}>
+                <button className="col-auto btn card-btn" type="submit" disabled={isLoading || isCreating}>
                     {isLoading ? "Загружаем..." : "Применить"}
                 </button>
             </form>
 
-            <div className="pt-3">
+            {!isCreating && <div className="pt-3" style={{
+                height: '75vh',
+                overflowY: 'auto',
+                overflowX: 'hidden'
+            }}>
                 {isLoading && (<p className="py-4 text-secondary">Загружаем цели...</p>)}
                 {!isLoading && error && (<p className="alert alert-danger mt-4">{error}</p>)}
                 {!isLoading && !error && savingGoals.length === 0 && (
@@ -98,12 +110,12 @@ export function SavingGoalsPage() {
                             onArchive={handleArchive} onRestore={handleRestore} onUpdate={handleUpdate} />
                     ))
                 }
-            </div>
+            </div>}
 
-            <div>
+            {isCreating && <div className="pt-3">
                 <h2>Добавить новую цель</h2>
                 <CreateSavingGoalForm accounts={accounts} onCreate={loadGoals} />
-            </div>
+            </div>}
         </div>
     );
 }

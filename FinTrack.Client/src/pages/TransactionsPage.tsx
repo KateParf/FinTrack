@@ -23,6 +23,8 @@ export function TransactionsPage() {
     const [categories, setCategories] = useState<CategoryWithDepth[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [isCreatingTransaction, setIsCreatingTransaction] = useState(false);
+    const [isCreatingTransfer, setIsCreatingTransfer] = useState(false);
 
     const [type, setType] = useState<TransactionType | null>(null);
     const [categoryId, setCategoryId] = useState("");
@@ -115,8 +117,25 @@ export function TransactionsPage() {
                     {account && (<h4 className="text-success">Баланс: {formatCurrency(account.balance, account.currencyCode)}</h4>)}
                 </div>
                 <div className="col-auto">
-                    <button className="btn me-3"> +&nbsp;Новая операция</button>
-                    <button className="btn"> +&nbsp;Новый перевод</button>
+                    <Link className="btn me-3" to="/accounts"> ← К счетам </Link>
+
+                    {!isCreatingTransaction && <button className="btn me-3" disabled={isCreatingTransfer}
+                        onClick={event =>
+                            setIsCreatingTransaction(true)
+                        }> +&nbsp;Новая операция</button>}
+                    {isCreatingTransaction && <button className="btn card-btn me-3"
+                        onClick={event =>
+                            setIsCreatingTransaction(false)
+                        }> Назад к операциям</button>}
+
+                    {!isCreatingTransfer && <button className="btn" disabled={isCreatingTransaction}
+                        onClick={event =>
+                            setIsCreatingTransfer(true)
+                        }> +&nbsp;Новый перевод</button>}
+                    {isCreatingTransfer && <button className="btn card-btn"
+                        onClick={event =>
+                            setIsCreatingTransfer(false)
+                        }> Назад к операциям</button>}
                 </div>
             </div>
 
@@ -138,7 +157,7 @@ export function TransactionsPage() {
                 </div>
 
                 <div className="col-auto">
-                    <label className="form-label m-0" htmlFor="category">Категория </label>
+                    <label className="form-label m-0" htmlFor="category">Категория</label>
                     <select className="form-select" id="category" value={categoryId ?? ""} disabled={isTransfer}
                         onChange={event => {
                             const value = event.target.value;
@@ -173,12 +192,16 @@ export function TransactionsPage() {
                     />
                 </div>
 
-                <button className="col-auto btn card-btn" type="submit" disabled={isLoading}>
+                <button className="col-auto btn card-btn" type="submit" disabled={isLoading || isCreatingTransaction || isCreatingTransfer}>
                     {isLoading ? "Загружаем..." : "Применить"}
                 </button>
             </form>
 
-            <div className="pt-3">
+            {!isCreatingTransaction && !isCreatingTransfer && <div className="pt-3" style={{
+                height: '70vh',
+                overflowY: 'auto',
+                overflowX: 'hidden'
+            }}>
                 {isLoading && (<p className="py-4 text-secondary">Загружаем операции...</p>)}
                 {!isLoading && error && (<p className="alert alert-danger mt-4">{error}</p>)}
                 {!isLoading && !error && transactions.length === 0 && (
@@ -191,21 +214,19 @@ export function TransactionsPage() {
                             transaction={transaction} accounts={accounts} currencyCode={account!.currencyCode} categories={categories}
                             onUpdate={loadPageData} onDeleteTransaction={handleDeleteTransaction} onDeleteTransfer={handleDeleteTransfer} />
                     ))}
-            </div>
+            </div>}
 
-            {!isLoading && !error && account &&
-                (<div>
+            {isCreatingTransaction && !isLoading && !error && account &&
+                (<div className="pt-3">
                     <h2>Добавить новую операцию</h2>
                     <CreateTransactionForm account={account} categories={categories} onCreate={loadPageData} />
                 </div>)}
-            {!isLoading && !error && account &&
-                (<div>
+            {isCreatingTransfer && !isLoading && !error && account &&
+                (<div className="pt-3">
                     <h2>Добавить новый перевод между счетами</h2>
                     <CreateTransferForm account={account} accounts={accounts} onCreate={loadPageData} />
                 </div>)
             }
-
-            <div><Link className="btn" to="/accounts"> ← К счетам </Link></div>
         </div >
     );
 }

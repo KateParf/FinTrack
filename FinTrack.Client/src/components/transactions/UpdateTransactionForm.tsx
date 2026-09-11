@@ -58,7 +58,7 @@ export function UpdateTransactionForm({ transaction, categories, onUpdate, onCan
     return (
         <form className="card-body" onSubmit={handleSubmit}>
             <div className="row align-items-end">
-                <div className="col-lg-1">
+                <div className="col">
                     <label htmlFor="transaction-type" className="form-label">Тип </label>
                     <select id="transaction-type" value={type} className="form-select"
                         onChange={event => {
@@ -70,7 +70,7 @@ export function UpdateTransactionForm({ transaction, categories, onUpdate, onCan
                     </select>
                 </div>
 
-                <div className="col-lg-2">
+                <div className="col">
                     <label htmlFor="transaction-category" className="form-label">Категория</label>
                     <select id="transaction-category" value={categoryId} className="form-select"
                         onChange={event => setCategoryId(event.target.value)}>
@@ -83,7 +83,7 @@ export function UpdateTransactionForm({ transaction, categories, onUpdate, onCan
                     </select>
                 </div>
 
-                <div className="col-lg-1">
+                <div className="col">
                     <label htmlFor="transaction-amount" className="form-label">Сумма</label>
                     <input id="transaction-amount" type="number" className="form-control"
                         min="0.01" step="0.01" value={amount}
@@ -106,7 +106,7 @@ export function UpdateTransactionForm({ transaction, categories, onUpdate, onCan
                     />
                 </div>
 
-                <div className="col">
+                <div className="col-lg-auto">
                     <div className="d-flex gap-2 justify-content-end">
                         <button className="btn card-btn" type="submit" disabled={isSubmitting}>
                             {isSubmitting ? "Обновляем..." : "Обновить"}

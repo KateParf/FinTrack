@@ -18,7 +18,7 @@ export function CategoryCard({ category, categories, depth = 0, onArchive, onRes
 
     if (isEditing) {
         return (
-            <article className="category-row" style={{ paddingLeft: `${depth * 32}px` }}>
+            <article className="category-row">
                 <UpdateCategoryForm category={category} categories={categories}
                     onSave={onUpdate} onCancel={() => setIsEditing(false)} />
             </article>

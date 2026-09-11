@@ -76,7 +76,7 @@ export function CreateSavingGoalForm({ accounts, onCreate }: CreateSavingGoalFor
             <form className="card-body" onSubmit={handleSubmit}>
                 <div className="row align-items-end">
 
-                    <div className="col-lg-4">
+                    <div className="col-lg-3">
                         <label htmlFor="name" className="form-label">Название </label>
                         <input id="name" value={name} className="form-control"
                             onChange={event =>
@@ -85,7 +85,7 @@ export function CreateSavingGoalForm({ accounts, onCreate }: CreateSavingGoalFor
                             required />
                     </div>
 
-                    <div className="col-lg-auto">
+                    <div className="col">
                         <label htmlFor="targetAmount" className="form-label">Цель</label>
                         <input id="targetAmount" className="form-control" type="number" min="0" step="0.01" value={targetAmount}
                             onChange={event =>
@@ -124,7 +124,7 @@ export function CreateSavingGoalForm({ accounts, onCreate }: CreateSavingGoalFor
                             }} />
                     </div>
 
-                    <div className="col-lg-1 d-flex justify-content-end">
+                    <div className="col-lg-auto d-flex justify-content-end">
                         <button className="btn" type="submit" disabled={isSubmitting}>{isSubmitting ? "Создаём..." : "Создать"}</button>
                     </div>
                 </div>

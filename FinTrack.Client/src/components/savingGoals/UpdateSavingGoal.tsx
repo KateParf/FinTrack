@@ -73,7 +73,7 @@ export function UpdateSavingGoalForm({ goal, accounts, onSave, onCancel }: Updat
         <form className="card-body" onSubmit={handleSubmit}>
             <div className="row align-items-end g-3">
 
-                <div className="col-lg-4">
+                <div className="col">
                     <label htmlFor="name" className="form-label">Название</label>
                     <input id="name" value={name} className="form-control"
                         onChange={event =>
@@ -82,7 +82,7 @@ export function UpdateSavingGoalForm({ goal, accounts, onSave, onCancel }: Updat
                         required />
                 </div>
 
-                <div className="col-lg-auto">
+                <div className="col-lg-2">
                     <label htmlFor="targetAmount" className="form-label">Цель</label>
                     <input id="targetAmount" className="form-control" type="number" min="0" step="0.01" value={targetAmount}
                         onChange={event =>
@@ -111,7 +111,7 @@ export function UpdateSavingGoalForm({ goal, accounts, onSave, onCancel }: Updat
                     />
                 </div>
 
-                <div className="col-lg-2">
+                <div className="col">
                     <label htmlFor="accountIds" className="form-label">Привяжите счета</label>
                     <Select<AccountOption, true> placeholder="Ваши накопительные счета"
                         inputId="accountIds" isMulti classNamePrefix="my-select" 
@@ -121,7 +121,7 @@ export function UpdateSavingGoalForm({ goal, accounts, onSave, onCancel }: Updat
                         }} />
                 </div>
 
-                <div className="col">
+                <div className="col-lg-auto">
                     <div className="d-flex gap-2 justify-content-end">
                         <button className="btn card-btn" type="submit" disabled={isSubmitting}>
                             {isSubmitting ? "Обновляем..." : "Обновить"}

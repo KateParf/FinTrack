@@ -105,7 +105,7 @@ export function UpdateTransferForm({ transfer, accounts, onUpdate, onCancel }: U
                     </select>
                 </div>
 
-                <div className="col-lg-1">
+                <div className="col">
                     <label htmlFor="transfer-amount" className="form-label">Сумма ({transfer.currencyCode})</label>
                     <input id="transfer-amount" type="number" min="0.01" step="0.01" className="form-control"
                         value={amount} onChange={event => setAmount(event.target.value)}
@@ -125,7 +125,7 @@ export function UpdateTransferForm({ transfer, accounts, onUpdate, onCancel }: U
                         onChange={event => setNote(event.target.value)} />
                 </div>
 
-                <div className="col">
+                <div className="col-lg-auto">
                     <div className="d-flex gap-2 justify-content-end">
                         <button className="btn card-btn" type="submit" disabled={isSubmitting}>
                             {isSubmitting ? "Обновляем..." : "Обновить"}
