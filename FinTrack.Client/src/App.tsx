@@ -8,16 +8,21 @@ import { CategoriesPage } from "./pages/CategoriesPage";
 import { TransactionsPage } from "./pages/TransactionsPage";
 import { SavingGoalsPage } from "./pages/SavingGoalsPage";
 import { Navbar } from "./components/navbar/NavBar";
+import { UserPage } from "./pages/UserPage";
+import { useAuth } from "./auth/AuthContext";
 
 export function App() {
+    const { isAuthenticated } = useAuth();
+
     return (
         <div className="app-container d-flex">
-            <Navbar />
+             {isAuthenticated && <Navbar />}
             <main className="main-content vh-100 vw-100">
                 <Routes>
-                    <Route path="/" element={<ProtectedRoute> <HomePage /> </ProtectedRoute>} />
+                    <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/register" element={<RegisterPage />} />
+                    <Route path="/profile" element={<ProtectedRoute><UserPage /></ProtectedRoute>} />
                     <Route path="/accounts" element={<ProtectedRoute><AccountsPage /></ProtectedRoute>} />
                     <Route path="/saving-goals" element={<ProtectedRoute><SavingGoalsPage /></ProtectedRoute>} />
                     <Route path="/categories" element={<ProtectedRoute><CategoriesPage /> </ProtectedRoute>} />

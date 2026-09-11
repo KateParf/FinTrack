@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../auth/AuthContext";
+import { BoxArrowRight, PersonCircle } from "react-bootstrap-icons";
 
 export function Navbar() {
     const { user, signOut } = useAuth();
@@ -19,9 +20,24 @@ export function Navbar() {
                 <li className="nav-item"><Link className="nav-link" to="/categories">Категории</Link></li>
                 <li className="nav-item"><Link className="nav-link" to="/saving-goals">Накопления</Link></li>
             </ul>
-            <ul className="navbar-nav w-100 border-top">
-                <li className="nav-item ps-2 "><button className="nav-link" onClick={handleLogout}>Выйти</button></li>
-            </ul>
+            <div className="w-100 pe-0">
+                <ul className="ps-2">
+                    {user && (
+                        <Link className="nav-link d-flex align-items-center gap-2 mb-2" to="/profile">
+                            <PersonCircle className="fs-3" />
+                            <div>
+                                <div className="fw-semibold">{user.name}</div>
+                                <div className="small text-secondary">Профиль</div>
+                            </div>
+                        </Link>
+                    )}
+                </ul>
+                <ul className="ps-2 border-top">
+                    <button className="nav-link d-flex align-items-center gap-2 pt-1"
+                        type="button" onClick={() => void handleLogout()}>Выйти
+                    </button>
+                </ul>
+            </div>
         </nav>
     )
 }

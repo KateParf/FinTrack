@@ -1,9 +1,9 @@
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from "react";
 import { LoginRequest, RegistrationRequest } from "../types/auth";
-import { User } from "../types/user";
+import { User, UserRequest } from "../types/user";
 import { clearAccessToken, setAccessToken } from "./accessTokenStore";
 import { refreshAccessToken, subscribeToSessionExpired } from "./authSession";
-import { getCurrentUser } from "../api/usersApi";
+import { getCurrentUser, updateUser } from "../api/usersApi";
 import { login, logout, register } from "../api/authApi";
 
 interface AuthContextValue {
@@ -14,6 +14,7 @@ interface AuthContextValue {
     signIn(request: LoginRequest): Promise<void>;
     signUp(request: RegistrationRequest): Promise<void>;
     signOut(): Promise<void>;
+    updateProfile(request: UserRequest): Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -75,7 +76,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
             setUser(null);
             try {
                 await logout();
-            } catch {}
+            } catch { }
             throw error;
         }
     }
@@ -88,6 +89,11 @@ export function AuthProvider({ children }: PropsWithChildren) {
     async function signUp(request: RegistrationRequest): Promise<void> {
         const response = await register(request);
         await completeAuthentication(response.accessToken);
+    }
+
+    async function updateProfile(request: UserRequest): Promise<void> {
+        const updatedUser = await updateUser(request);
+        setUser(updatedUser);
     }
 
     async function signOut(): Promise<void> {
@@ -104,7 +110,8 @@ export function AuthProvider({ children }: PropsWithChildren) {
                 isLoading,
                 signIn,
                 signUp,
-                signOut
+                signOut,
+                updateProfile
             }}>
             {children}
         </AuthContext.Provider>
